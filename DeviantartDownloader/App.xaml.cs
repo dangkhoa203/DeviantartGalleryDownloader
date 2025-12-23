@@ -18,11 +18,26 @@ namespace DeviantartDownloader
         private readonly ServiceProvider _serviceProvider;
         private void ConfigureService(IServiceCollection services) {
             services.AddSingleton<IDialogService, DialogService>();
+            services.AddSingleton<MainWindowViewModel>();
+            services.AddSingleton<GetGalleryViewModel>();
+            services.AddSingleton<MainWindow>();
+            services.AddSingleton<DeviantartClient>();
         }
         public App() {
             IServiceCollection services = new ServiceCollection();
             ConfigureService(services);
             _serviceProvider = services.BuildServiceProvider();
+        }
+        protected override void OnStartup(StartupEventArgs e) {
+            var mainWindows = _serviceProvider.GetRequiredService<MainWindow>();
+            mainWindows.Show();
+            base.OnStartup(e);
+        }
+        private void OnExit(object sender, ExitEventArgs e) {
+            // Dispose of services if needed
+            if (_serviceProvider is IDisposable disposable) {
+                disposable.Dispose();
+            }
         }
     }
 

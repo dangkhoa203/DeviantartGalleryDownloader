@@ -9,9 +9,7 @@
         Title="MainWindow" Height="450" Width="800"
         Background="AntiqueWhite"
         >
-    <Window.DataContext>
-        <vm:MainWindowViewModel />
-    </Window.DataContext>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="80"/>
@@ -35,7 +33,7 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button Margin="20,0,20,0" Grid.Column="0" Content="Get from gallery"/>
+            <Button Command="{Binding GetGalleryDialogCommand}" Margin="20,0,20,0" Grid.Column="0" Content="Get from gallery"/>
             <Button Margin="20,0,20,0"  Grid.Column="1" Content="Clear"/>
             <Button Margin="20,0,20,0"  Grid.Column="2" Content="Download"/>
         </Grid>

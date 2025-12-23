@@ -5,8 +5,8 @@ using System.Text;
 
 namespace DeviantartDownloader.Service.Interface
 {
-    interface IDialogService
+    public interface IDialogService
     {
-        bool? ShowDialog<TViewModel>(TViewModel viewModel) where TViewModel : ViewModel;
+        TViewModel? ShowDialog<TViewModel>(TViewModel viewModel) where TViewModel : ViewModel;
     }
 }

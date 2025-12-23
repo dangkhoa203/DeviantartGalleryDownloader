@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using DeviantartDownloader.ViewModels;
+using Microsoft.Win32;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,9 +18,10 @@ namespace DeviantartDownloader.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public MainWindow(MainWindowViewModel model)
         {
             InitializeComponent();
+            this.DataContext = model;
         }
     }
 }
