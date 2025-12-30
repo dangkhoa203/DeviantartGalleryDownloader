@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeviantartDownloader.Views" xmlns:viewmodels="clr-namespace:DeviantartDownloader.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:GetGalleryViewModel}"
         mc:Ignorable="d"
-        
-        Title="GetGallery" Height="450" Width="800">
+        WindowStartupLocation="CenterScreen"
+        Title="GetGallery" Height="800" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="80"/>
@@ -22,12 +22,12 @@
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0">
                 <Label Content="Search from username:" Target="{Binding ElementName=textUsername}" />
-                <TextBox IsEnabled="{Binding isSearchable}" Name="textUsername" Background="White"  Height="30" FontSize="18" Text="{Binding UserName}"  Margin="20,0,20,0"/>
+                <TextBox Name="textUsername"  Background="White"  Height="30" FontSize="18" Text="{Binding UserName}"  Margin="20,0,20,0"/>
             </StackPanel>
-            <Button Command="{Binding TestCommand}" Grid.Column="1"  Content="{Binding loadingSearch}"/>
+            <Button Command="{Binding GetFolderCommand}" Grid.Column="1"  Content="{Binding loadingSearchFolder}"/>
         </Grid>
         <StackPanel Grid.Row="1" Margin="20,0,20,0">
-            <Label Content="User folder" Target="{Binding ElementName=txtPath}" />
+            <Label Content="User folder" Target="{Binding ElementName=cbFolder}" />
             <Grid  Margin="20,0,20,10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="90"/>
@@ -39,74 +39,46 @@
                 <Button Command="{Binding ResetUserCommand}" Grid.Column="2" Content="Reset"/>
             </Grid>
             <ComboBox 
+                IsSynchronizedWithCurrentItem="True"
                 Name="cbFolder"
                 ItemsSource="{Binding Folders}"
-                DisplayMemberPath="name"
-                SelectedValuePath="folderid"
-                SelectedValue="{Binding selfolderid}"
+                DisplayMemberPath="DisplayName"
+                SelectedValuePath="Id"
+                SelectedItem="{Binding selectedFolder,Mode=TwoWay}"
                 Margin="20,0,20,0"/>
         </StackPanel>
         <Grid Grid.Row="2" Margin="0,20,0,0" HorizontalAlignment="Center">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="200"/>
-                <ColumnDefinition Width="200"/>
             </Grid.ColumnDefinitions>
             <Button Name="Btn_Cancel" Grid.Column="0" Margin="0,0,20,0" Click="Btn_Cancel_Click">Close</Button>
-            <Button Name="Btn_AddList" Grid.Column="1" Margin="0,0,20,0"  Command="{Binding GetDeviantCommand}">Add to list</Button>
-            <Button Name="Btn_Submit" Grid.Column="2" Margin="0,0,20,0" Click="Btn_Submit_Click" >Submit</Button>
+            <Button Name="Btn_AddList" Grid.Column="1" Margin="0,0,20,0"  Command="{Binding GetDeviantCommand}" Content="{Binding loadingSearchDeviant}"/>
         </Grid>
-        <DataGrid ItemsSource="{Binding Deviant}" AutoGenerateColumns="False" Grid.Row="3" Margin="20,20,20,20">
+        <DataGrid  CanUserAddRows="False" RowHeight="30" ItemsSource="{Binding Deviant}" AutoGenerateColumns="False" Grid.Row="3" Margin="20,20,20,20" SelectionMode="Single" CanUserResizeRows="False">
             <DataGrid.Columns>
                 <!-- Other DataGridTextColumns can go here -->
-                <DataGridTemplateColumn Width="*" Header="Username">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTextColumn Binding="{Binding author.username}"  Width="*" Header="Deviation Name">
+                <DataGridTextColumn IsReadOnly="True" Binding="{Binding Author.Username}" Width="200" Header="Author">
+                   
+                </DataGridTextColumn>
+                <DataGridTextColumn IsReadOnly="True" Binding="{Binding Title}"  Width="*" Header="Deviation Name">
                     
                 </DataGridTextColumn>
-                <DataGridTemplateColumn Header="Type">
+                <DataGridTextColumn IsReadOnly="True" Width="60" Binding="{Binding Type}" Header="Type">
+
+                </DataGridTextColumn>
+                <DataGridTemplateColumn Header="" Width="80">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Click Me"  />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Percent">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="Click Me"  />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Status">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="Click Me"  />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="Click Me"  />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="Click Me"  />
+                            <Button Command="{Binding Path=DataContext.RemoveDeviantFromListCommand,       
+                                    RelativeSource= {RelativeSource FindAncestor,
+                                    AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding Path=Deviationid}" Content="Remove"  />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
             
         </DataGrid>
-        <Button Grid.Row="4" Margin="10,10,10,10" Content="Add to download list"/>
+        <Button Name="Btn_Submit" Grid.Row="4" Margin="10,10,10,10" Content="Add to download list" Command="{Binding SubmitToDownloadListCommand}" Click="Btn_Submit_Click"/>
     </Grid>
 </Window>

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeviantartDownloader.Models
+namespace DeviantartDownloader.DTOs
 {
     public class AuthenticateResponse
     {

@@ -4,8 +4,8 @@ using System.Text;
 
 namespace DeviantartDownloader.Models {
     public class Content {
-        public string? excerpt {  get; set; }
-        public string? src { get; set; }
-        public int? filesize { get; set; }
+        public string? Excerpt {  get; set; }
+        public string? Src { get; set; }
+        public int? FileSize { get; set; }
     }
 }

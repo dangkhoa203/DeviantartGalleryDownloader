@@ -21,7 +21,7 @@ namespace DeviantartDownloader
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<GetGalleryViewModel>();
             services.AddSingleton<MainWindow>();
-            services.AddSingleton<DeviantartClient>();
+            services.AddSingleton<DeviantartService>();
         }
         public App() {
             IServiceCollection services = new ServiceCollection();

@@ -14,14 +14,14 @@ namespace DeviantartDownloader.ViewModels
     {
         private string _downloadPath;
         private readonly IDialogService _dialogService;
-        public DeviantartClient Client { get; set; }
+        public DeviantartService Client { get; set; }
         public string DownloadPath {
             get { return _downloadPath; }
             set { _downloadPath = value;OnPropertyChanged("DownloadPath"); }
         }
         public RelayCommand GetDownloadPathCommand { get; set; }
         public RelayCommand GetGalleryDialogCommand { get; set; }
-        public MainWindowViewModel(IDialogService service,DeviantartClient client) {
+        public MainWindowViewModel(IDialogService service,DeviantartService client) {
             Client = client;
             _downloadPath = string.Empty;
             _dialogService = service;
@@ -44,6 +44,7 @@ namespace DeviantartDownloader.ViewModels
                 // 2. Transfer the data back to the Main Window
                 if (resultVm.Success) {
                     MessageBox.Show("Test");
+                    
                 }
             }, o => true);
 
