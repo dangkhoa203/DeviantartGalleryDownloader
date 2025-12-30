@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeviantartDownloader"
-        xmlns:vm="clr-namespace:DeviantartDownloader.ViewModels"
+        xmlns:vm="clr-namespace:DeviantartDownloader.ViewModels" d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         Background="AntiqueWhite"
@@ -38,7 +38,35 @@
             <Button Margin="20,0,20,0"  Grid.Column="2" Content="Download"/>
         </Grid>
         <Grid Grid.Row="2">
-            
+            <DataGrid  CanUserAddRows="False" RowHeight="30" ItemsSource="{Binding Deviants}" AutoGenerateColumns="False" Grid.Row="3" Margin="20,20,20,20" SelectionMode="Single" CanUserResizeRows="False">
+                <DataGrid.Columns>
+                    <!-- Other DataGridTextColumns can go here -->
+                    <DataGridTextColumn IsReadOnly="True" Binding="{Binding Deviant.Author.Username}" Width="200" Header="Author">
+
+                    </DataGridTextColumn>
+                    <DataGridTextColumn IsReadOnly="True" Binding="{Binding Deviant.Title}"  Width="*" Header="Deviation Name">
+
+                    </DataGridTextColumn>
+                    <DataGridTextColumn IsReadOnly="True" Width="60" Binding="{Binding Deviant.Type}" Header="Type">
+
+                    </DataGridTextColumn>
+                    <DataGridTextColumn IsReadOnly="True" Width="60" Binding="{Binding Percent}" Header="Percent">
+
+                    </DataGridTextColumn>
+                    <DataGridTextColumn IsReadOnly="True" Width="60" Binding="{Binding Status}" Header="Status">
+
+                    </DataGridTextColumn>
+                    <DataGridTemplateColumn Header="" Width="80">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Command="{Binding Path=DataContext.RemoveDeviantFromListCommand,       
+                            RelativeSource= {RelativeSource FindAncestor,
+                            AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding Path= Deviant.Deviationid}" Content="Remove"  />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
         </Grid>
     </Grid>
 </Window>
