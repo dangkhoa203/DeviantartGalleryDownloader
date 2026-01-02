@@ -83,7 +83,7 @@ namespace DeviantartDownloader.ViewModels
                 }
                 isDownloading= false;
                
-            }, o => { return Deviants.Count > 0 && DownloadPath.Count() > 0 && !isDownloading; });
+            }, o => { return Deviants.Where(o=>o.Status!=DownloadStatus.Completed).ToList().Count > 0 && DownloadPath.Count() > 0 && !isDownloading; });
         }
 
         private void clearStatus() {

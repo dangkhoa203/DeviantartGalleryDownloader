@@ -6,8 +6,9 @@
         xmlns:local="clr-namespace:DeviantartDownloader"
         xmlns:vm="clr-namespace:DeviantartDownloader.ViewModels" d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="MainWindow" Height="750" Width="1000"
         Background="AntiqueWhite"
+        WindowStartupLocation="CenterScreen"
         >
     
     <Grid>
@@ -15,6 +16,7 @@
             <RowDefinition Height="80"/>
             <RowDefinition Height="50" />
             <RowDefinition Height="*"/>
+            <RowDefinition Height="50" />
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
         <Grid VerticalAlignment="Top" Grid.Row="0" Margin="10,10,10,10">
@@ -24,7 +26,7 @@
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0">
                 <Label Content="Path:" Target="{Binding ElementName=txtPath}" />
-                <TextBox Name="txtPath" Background="White"  Height="30" FontSize="18" Text="{Binding DownloadPath}"  Margin="0,0,20,0"/>
+                <TextBox Name="txtPath" IsReadOnly="{Binding isDownloading}" Background="White"  Height="30" FontSize="18" Text="{Binding DownloadPath}"  Margin="0,0,20,0"/>
             </StackPanel>
             <Button Command="{Binding GetDownloadPathCommand}" Grid.Column="1" Height="50" Content= "Path"/>
         </Grid>
@@ -72,7 +74,10 @@
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
-        <Grid Grid.Row="3">
+        <Grid Grid.Row="3" Margin="20,0,20,20">
+            <ProgressBar IsIndeterminate="{Binding isDownloading}"/>
+        </Grid>
+        <Grid Grid.Row="4">
             <Button Margin="20,0,20,10" Width="300" Command="{Binding DonwloadDeviantCommand}"  Content="Download"/>
         </Grid>
     </Grid>

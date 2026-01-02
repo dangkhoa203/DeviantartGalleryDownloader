@@ -2,6 +2,7 @@
 using DeviantartDownloader.Extension;
 using DeviantartDownloader.Models;
 using DeviantartDownloader.Models.Enum;
+using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,6 +10,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Reflection.Metadata;
+using System.Security.Policy;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -162,8 +164,8 @@ namespace DeviantartDownloader.Service {
                     case DeviantType.Art:
                         if (content.Deviant.Donwloadable) {
                             string request = $"https://www.deviantart.com/api/v1/oauth2/deviation/download/{content.Deviant.Deviationid}?access_token={AccessKey}";
-                            using HttpResponseMessage response = await _httpClient.GetAsync(request, HttpCompletionOption.ResponseContentRead, cts.Token);
-                            var jsonResponse = await response.Content.ReadAsStringAsync();
+                            using HttpResponseMessage getDownloadresponse = await _httpClient.GetAsync(request, HttpCompletionOption.ResponseContentRead, cts.Token);
+                            var jsonResponse = await getDownloadresponse.Content.ReadAsStringAsync();
                             var key = JsonSerializer.Deserialize<GetDonwloadContentResponse>(jsonResponse);
                             if (key.error != null) {
                                 MessageBox.Show(key.error_description, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -196,6 +198,22 @@ namespace DeviantartDownloader.Service {
                         }
                         content.Status = DownloadStatus.Completed;
                         break;
+                    case DeviantType.Literature:
+                    HtmlWeb web = new HtmlWeb();
+
+
+                    var htmlDoc = web.Load(content.Deviant.Url);
+                    if (web.StatusCode != HttpStatusCode.OK) {
+                        throw new Exception("Not found!");
+                    }
+                    var node = htmlDoc.DocumentNode.SelectNodes("//section").ToList();
+                    string filePath = Path.Combine(destinationPath, $"{content.Deviant.Title}_by_{content.Deviant.Author.Username}.html");
+
+                    // Write the HTML content to the file.
+                    // This will create the file if it doesn't exist or overwrite it if it does.
+                    File.WriteAllText(filePath, CreateHTMLFile(node[1].OuterHtml));
+
+                    break;
                 }
             }
             catch (TaskCanceledException ex) {
@@ -228,6 +246,17 @@ namespace DeviantartDownloader.Service {
                 return FileType.mp3;
             }
             return FileType.unknown;
+        }
+        private string CreateHTMLFile(string outerHTML) {
+            return $@"
+                    <html>
+                    <head>
+                        <title>My Saved HTML</title>
+                    </head>
+                    <body>
+                       {outerHTML}
+                    </body>
+                    </html>";
         }
     }
 }
