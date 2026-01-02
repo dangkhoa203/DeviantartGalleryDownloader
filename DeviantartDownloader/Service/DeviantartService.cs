@@ -204,21 +204,23 @@ namespace DeviantartDownloader.Service {
                         content.Status = DownloadStatus.Completed;
                         break;
                     case DeviantType.Literature:
-                    HtmlWeb web = new HtmlWeb();
+                        HtmlWeb web = new HtmlWeb();
 
 
-                    var htmlDoc = web.Load(content.Deviant.Url);
-                    if (web.StatusCode != HttpStatusCode.OK) {
-                        throw new Exception("Not found!");
-                    }
-                    var node = htmlDoc.DocumentNode.SelectNodes("//section").ToList();
-                    string filePath = Path.Combine(destinationPath, $"{content.Deviant.Title}_by_{content.Deviant.Author.Username}.html");
+                        var htmlDoc = web.Load(content.Deviant.Url);
+                        if (web.StatusCode != HttpStatusCode.OK) {
+                            throw new Exception("Not found!");
+                        }
+                        IProgress<float> progress = Progress;
+                        progress.Report((float)0.5);
+                        var node = htmlDoc.DocumentNode.SelectNodes("//section").ToList();
+                        string filePath = Path.Combine(destinationPath, $"{content.Deviant.Title}_by_{content.Deviant.Author.Username}.html");
 
-                    // Write the HTML content to the file.
-                    // This will create the file if it doesn't exist or overwrite it if it does.
-                    File.WriteAllText(filePath, CreateHTMLFile(node[1].OuterHtml));
 
-                    break;
+                        File.WriteAllText(filePath, CreateHTMLFile(node[1].OuterHtml));
+                        progress.Report(1);
+                        content.Status = DownloadStatus.Completed;
+                        break;
                 }
             }
             catch (TaskCanceledException ex) {
