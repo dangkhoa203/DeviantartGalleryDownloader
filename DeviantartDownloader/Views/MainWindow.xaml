@@ -15,6 +15,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="80"/>
             <RowDefinition Height="50" />
+            <RowDefinition Height="50" />
             <RowDefinition Height="*"/>
             <RowDefinition Height="50" />
             <RowDefinition Height="50" />
@@ -38,7 +39,13 @@
             <Button Command="{Binding ShowSearchGalleryDialogCommand}" Margin="20,0,20,0" Grid.Column="0" Content="Get from gallery"/>
             <Button Margin="20,0,20,0" Command="{Binding ClearListCommand}"  Grid.Column="1" Content="Clear"/>
         </Grid>
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="2" Margin="20,0,20,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Width="200" Command="{Binding ShowCookieSettingDialogCommand}" Margin="0,0,0,0" Grid.Column="0" Content="Cookie Setting"/>
+        </Grid>
+        <Grid Grid.Row="3">
         <DataGrid 
           
        CanUserAddRows="False" RowHeight="30" ItemsSource="{Binding DownloadList,  UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" Grid.Row="3" Margin="20,20,20,20" SelectionMode="Single" CanUserResizeRows="False">
@@ -74,10 +81,10 @@
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
-        <Grid Grid.Row="3" Margin="20,0,20,20">
+        <Grid Grid.Row="4" Margin="20,0,20,20">
             <ProgressBar IsIndeterminate="{Binding IsDownloading}"/>
         </Grid>
-        <Grid Grid.Row="4">
+        <Grid Grid.Row="5">
             <Button Margin="20,0,20,10" Width="300" Command="{Binding DonwloadDeviantCommand}"  Content="{Binding DownloadLabel}"/>
         </Grid>
     </Grid>

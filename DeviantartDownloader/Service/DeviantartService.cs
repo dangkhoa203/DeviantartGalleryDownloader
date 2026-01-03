@@ -101,7 +101,7 @@ namespace DeviantartDownloader.Service {
                 List<Content_DeviantAPI> contents = [];
 
                 while (hasMore) {
-                    string request = $"https://www.deviantart.com/api/v1/oauth2/gallery/{folderId}?username={userName}&offset={offSet}&mode=newest&limit=24&access_token={AccessToken}";
+                    string request = $"https://www.deviantart.com/api/v1/oauth2/gallery/{folderId}?username={userName}&offset={offSet}&mode=newest&mature_content=true&limit=24&access_token={AccessToken}";
                     using HttpResponseMessage response = await _httpClient.GetAsync(request, HttpCompletionOption.ResponseContentRead, cts.Token);
                     var jsonResponse = await response.Content.ReadAsStringAsync();
                     var result = JsonSerializer.Deserialize<Response_SearchDeviant>(jsonResponse);
@@ -153,7 +153,7 @@ namespace DeviantartDownloader.Service {
                 return [];
             }
         }
-        public async Task DonwloadDeviant(DownloadableDeviant content, CancellationTokenSource cts,string destinationPath) {
+        public async Task DonwloadDeviant(DownloadableDeviant content, CancellationTokenSource cts,string destinationPath, string HeaderString="") {
             try {
                 content.Percent = 0;
                 content.Status = DownloadStatus.Waiting;
@@ -207,22 +207,39 @@ namespace DeviantartDownloader.Service {
                     content.Status = DownloadStatus.Completed;
                     break;
                     case DeviantType.Literature:
-                    HtmlWeb web = new HtmlWeb();
 
+                    
+                    // 2. Setup the handler to use that container
+                    var handler = new SocketsHttpHandler {
+                        UseCookies = false
+                    };
 
-                    var htmlDoc = web.Load(content.Deviant.Url);
-                    if (web.StatusCode != HttpStatusCode.OK) {
-                        throw new Exception("Not found!");
-                    }
                     IProgress<float> progress = Progress;
                     progress.Report((float)0.5);
-                    var node = htmlDoc.DocumentNode.SelectNodes("//section").ToList();
-                    string filePath = Path.Combine(destinationPath, content.Deviant.Author.Username, $"{content.Deviant.Title}_by_{content.Deviant.Author.Username}.html");
+                    using (var httpClient = new HttpClient(handler)) {
+                        var request = new HttpRequestMessage(HttpMethod.Get, content.Deviant.Url);
+                        if (HeaderString != "") {
+                            request.Headers.Add("Cookie", HeaderString);
+                        }
+                       
+                        var response = await httpClient.SendAsync(request);
+                        response.EnsureSuccessStatusCode();
+                        string htmlContent=await response.Content.ReadAsStringAsync();
+                        var htmlDoc = new HtmlDocument();
+                        htmlDoc.LoadHtml(htmlContent);
+                        var node = htmlDoc.DocumentNode.SelectNodes("//section").ToList();
+                        string filePath = Path.Combine(destinationPath, content.Deviant.Author.Username, $"{content.Deviant.Title}_by_{content.Deviant.Author.Username}.html");
+                        File.WriteAllText(filePath, CreateHTMLFile(node[1].InnerText.Contains("Badge Awards") ? node[2].OuterHtml: node[1].OuterHtml));
+                        progress.Report(1);
+                        content.Status = DownloadStatus.Completed;
+                    }
 
 
-                    File.WriteAllText(filePath, CreateHTMLFile(node[1].OuterHtml));
-                    progress.Report(1);
-                    content.Status = DownloadStatus.Completed;
+
+
+                   
+                    
+                    
                     break;
                 }
             }

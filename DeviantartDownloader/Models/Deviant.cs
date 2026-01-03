@@ -13,5 +13,6 @@ namespace DeviantartDownloader.Models {
         public ICollection<MediaContent>? Video { get; set; }
         public DeviantType Type { get; set; }
         public bool Donwloadable { get; set; }
+        public bool? IsSelected { get; set; }=false;
     }
 }

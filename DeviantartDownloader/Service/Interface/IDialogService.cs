@@ -7,6 +7,6 @@ namespace DeviantartDownloader.Service.Interface
 {
     public interface IDialogService
     {
-        TViewModel? ShowDialog<TViewModel>(TViewModel viewModel) where TViewModel : ViewModel;
+        TViewModel? ShowDialog<TViewModel>(TViewModel viewModel) where TViewModel : DialogViewModel;
     }
 }

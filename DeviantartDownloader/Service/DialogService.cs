@@ -8,10 +8,10 @@ using System.Windows;
 namespace DeviantartDownloader.Service
 {
     public class DialogService : IDialogService {
-        public TViewModel? ShowDialog<TViewModel>(TViewModel viewModel) where TViewModel : ViewModel {
+        public TViewModel? ShowDialog<TViewModel>(TViewModel viewModel) where TViewModel : DialogViewModel {
             // 1. Map ViewModel to View (often via a naming convention or dictionary)
             Window window = CreateViewForViewModel(viewModel);
-
+            viewModel.Dialog = window;
             // 2. Set DataContext to the provided ViewModel
             window.DataContext = viewModel;
 

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Net;
 using System.Net.Http;
 using System.Reflection.Metadata;
 using System.Security.Policy;
@@ -52,10 +53,16 @@ namespace DeviantartDownloader.ViewModels
         }
         public RelayCommand GetDestinationPathCommand { get; set; }
         public RelayCommand ShowSearchGalleryDialogCommand { get; set; }
+        public RelayCommand ShowCookieSettingDialogCommand { get; set; }
         public RelayCommand RemoveDeviantFromListCommand { get; set; }
         public RelayCommand ClearListCommand { get; set; }
         public RelayCommand DonwloadDeviantCommand { get; set; }
-        
+        private string _headerString="";
+        public string HeaderString {
+            get { return _headerString; }
+            set { _headerString = value;OnPropertyChanged(nameof(HeaderString)); }
+        }
+       
         public MainWindowViewModel(IDialogService service, DeviantartService client) {
             DeviantartService = client;
             IsDownloading = false;
@@ -78,7 +85,10 @@ namespace DeviantartDownloader.ViewModels
             ShowSearchGalleryDialogCommand = new RelayCommand(o => {
                 ShowSearchGalleryDialog();
             }, o => !IsDownloading);
-            
+
+            ShowCookieSettingDialogCommand = new RelayCommand(o => {
+                ShowCookieSettingDialog();
+            }, o => !IsDownloading);
             DonwloadDeviantCommand = new RelayCommand(async o => {
                 await DownloadDeviant();
             }, o => { return DownloadList.Where(o=>o.Status!=DownloadStatus.Completed).ToList().Count > 0 &&
@@ -118,6 +128,14 @@ namespace DeviantartDownloader.ViewModels
                 }
             }
         }
+        private void ShowCookieSettingDialog() {
+            var viewModel = _dialogService.ShowDialog<CookieSettingViewModel>(new CookieSettingViewModel(HeaderString));
+            if (viewModel.Success) {
+                HeaderString= viewModel.HeaderString;
+            }
+
+
+        }
         private async Task DownloadDeviant() {
             if (!IsDownloading) {
                 DownloadLabel = "Cancel";
@@ -135,7 +153,7 @@ namespace DeviantartDownloader.ViewModels
                     tasks.Add(Task.Run(async () =>
                     {
                         try {
-                            await DeviantartService.DonwloadDeviant(deviant, cts, DestinationPath);
+                            await DeviantartService.DonwloadDeviant(deviant, cts, DestinationPath,HeaderString);
                         }
                         catch (Exception ex) {
 
