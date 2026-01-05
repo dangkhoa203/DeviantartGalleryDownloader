@@ -50,7 +50,7 @@ namespace DeviantartDownloader.ViewModels {
         }
 
         private GalleryFolder? _selectedFolder = null;
-        public GalleryFolder SelectedFolder {
+        public GalleryFolder? SelectedFolder {
             get { return _selectedFolder; }
             set {
                 _selectedFolder = value;
@@ -58,7 +58,7 @@ namespace DeviantartDownloader.ViewModels {
             }
         }
 
-        private ObservableCollection<GalleryFolder> _searchResultFolders;
+        private ObservableCollection<GalleryFolder> _searchResultFolders=[];
         public ObservableCollection<GalleryFolder> SearchResultFolders {
             get { return _searchResultFolders; }
             set {
@@ -66,7 +66,7 @@ namespace DeviantartDownloader.ViewModels {
                 OnPropertyChanged(nameof(SearchResultFolders));
             }
         }
-        private string _searchUserName;
+        private string _searchUserName="";
         public string SearchUserName {
             get { return _searchUserName; }
             set {
@@ -74,7 +74,7 @@ namespace DeviantartDownloader.ViewModels {
                 OnPropertyChanged(nameof(SearchUserName));
             }
         }
-        private ObservableCollection<Deviant> _deviants;
+        private ObservableCollection<Deviant> _deviants=[];
         public ObservableCollection<Deviant> Deviants {
             get { return _deviants; }
             set {
@@ -104,10 +104,7 @@ namespace DeviantartDownloader.ViewModels {
         public RelayCommand SelectAllLiteratureCommand { get; set; }
         public RelayCommand SelectAllVideoCommand { get; set; }
         public GetGalleryViewModel(DeviantartService service) {
-            _searchResultFolders = [];
-            _deviants = [];
             DeviantartService = service;
-            _searchUserName = "";
 
             RemoveDeviantFromListCommand = new RelayCommand(o => {
                 RemoveDeviantFromList(o as string ?? "");

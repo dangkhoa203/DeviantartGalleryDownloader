@@ -6,6 +6,7 @@ using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -233,18 +234,20 @@ namespace DeviantartDownloader.Service {
 
                             using(var response = await httpClient.SendAsync(request, cts.Token)) {
                                 response.EnsureSuccessStatusCode();
-                                progress.Report((float)0.25);
+                                progress.Report(0.25f);
 
                                 string htmlContent = await response.Content.ReadAsStringAsync(cts.Token);
                                 var htmlDoc = new HtmlDocument();
                                 htmlDoc.LoadHtml(htmlContent);
-                                progress.Report((float)0.5);
+                                progress.Report(0.5f);
 
                                 var node = htmlDoc.DocumentNode.SelectNodes("//section").ToList();
-                                progress.Report((float)0.75);
+                                progress.Report(0.75f);
 
                                 string filePath = Path.Combine(destinationPath, content.Deviant.Author.Username, $"{GetLegalFileName(content.Deviant.Title)}_by_{content.Deviant.Author.Username}.html");
-                                await File.WriteAllTextAsync(filePath, CreateHTMLFile(node[1].InnerText.Contains("Badge Awards") ? node[2].OuterHtml : node[1].OuterHtml), cts.Token);
+                                HtmlNode textContent = node[1].InnerText.Contains("Badge Awards") ? node[2] : node[1];
+                                textContent.RemoveChild(textContent.ChildNodes[0], false);
+                                await File.WriteAllTextAsync(filePath, CreateHTMLFile(content.Deviant.Title,textContent.OuterHtml), cts.Token);
                                 progress.Report(1);
 
                                 content.Status = DownloadStatus.Completed;
@@ -300,13 +303,17 @@ namespace DeviantartDownloader.Service {
             }
             return FileType.unknown;
         }
-        private string CreateHTMLFile(string outerHTML) {
+        private string CreateHTMLFile(string title,string outerHTML) {
             return $@"
                     <html>
                     <head>
-                        <title>My Saved HTML</title>
+                        <title>{title}</title>
+                          <style>
+							    p    {"{font-size:1.1em;}"}
+						   </style>
                     </head>
                     <body>
+                       <h1>{title}</h1>
                        {outerHTML}
                     </body>
                     </html>";
