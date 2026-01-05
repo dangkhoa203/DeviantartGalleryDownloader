@@ -44,7 +44,7 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button Width="300" Command="{Binding ShowCookieSettingDialogCommand}" Margin="0,0,0,0" Grid.Column="0" Content="Cookie Setting"/>
+            <Button Width="300" Command="{Binding ShowSettingDialogCommand}" Margin="0,0,0,0" Grid.Column="0" Content="Setting"/>
             <Button Width="300" Command="{Binding ClearCompletedFromListCommand}" Margin="0,0,0,0" Grid.Column="1" Content="Clear all completed"/>
         </Grid>
         <Grid Grid.Row="3">

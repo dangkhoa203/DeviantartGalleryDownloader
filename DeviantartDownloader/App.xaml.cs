@@ -20,7 +20,7 @@ namespace DeviantartDownloader
             services.AddSingleton<IDialogService, DialogService>();
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<GetGalleryViewModel>();
-            services.AddSingleton<CookieSettingViewModel>();
+            services.AddSingleton<SettingViewModel>();
             services.AddSingleton<MainWindow>();
             services.AddSingleton<DeviantartService>();
         }

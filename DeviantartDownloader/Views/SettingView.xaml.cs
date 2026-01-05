@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -12,15 +13,27 @@ using System.Windows.Shapes;
 
 namespace DeviantartDownloader.Views {
     /// <summary>
-    /// Interaction logic for CookieSettingView.xaml
+    /// Interaction logic for SettingView.xaml
     /// </summary>
-    public partial class CookieSettingView : Window {
-        public CookieSettingView() {
+    public partial class SettingView : Window {
+        public SettingView() {
             InitializeComponent();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e) {
             this.Close();
+        }
+
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e) {
+
+            Regex regex = new Regex("[^1-9]+");
+            e.Handled = regex.IsMatch(e.Text);
+        }
+
+        private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e) {
+            if(e.Key == Key.Space) {
+                e.Handled = true;
+            }
         }
     }
 }
