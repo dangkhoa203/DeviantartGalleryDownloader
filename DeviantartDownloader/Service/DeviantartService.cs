@@ -198,7 +198,7 @@ namespace DeviantartDownloader.Service {
                                 throw new Exception("Unknow File Type");
                             }
 
-                            using(var file = new FileStream(Path.Combine(destinationPath, content.Deviant.Author.Username, $"{GetLegalFileName(content.Deviant.Title)}_by_{content.Deviant.Author.Username}.{imgType.ToString()}"), FileMode.Create, FileAccess.Write, FileShare.None)) {
+                            using(var file = new FileStream(Path.Combine(destinationPath, content.Deviant.Author.Username, $"{GetLegalFileName(content.Deviant.Title)} by {content.Deviant.Author.Username}.{imgType.ToString()}"), FileMode.Create, FileAccess.Write, FileShare.None)) {
                                 await _httpClient.DownloadAsync(content.Deviant.Content.Src, file, Speed, Progress, cts.Token);
                             }
 
@@ -213,7 +213,7 @@ namespace DeviantartDownloader.Service {
                             throw new Exception("Unknow File Type");
                         }
 
-                        using(var file = new FileStream(Path.Combine(destinationPath, content.Deviant.Author.Username, $"{GetLegalFileName(content.Deviant.Title)}_by_{content.Deviant.Author.Username}.{videoType.ToString()}"), FileMode.Create, FileAccess.Write, FileShare.None)) {
+                        using(var file = new FileStream(Path.Combine(destinationPath, content.Deviant.Author.Username, $"{GetLegalFileName(content.Deviant.Title)} by {content.Deviant.Author.Username}.{videoType.ToString()}"), FileMode.Create, FileAccess.Write, FileShare.None)) {
                             await _httpClient.DownloadAsync(video.Src, file, Speed, Progress, cts.Token);
                         }
 
@@ -236,7 +236,7 @@ namespace DeviantartDownloader.Service {
                             
 
                             using(var response = await httpClient.SendAsync(request, cts.Token)) {
-                                await Task.Delay(TimeSpan.FromSeconds(2));
+                                await Task.Delay(TimeSpan.FromSeconds(1.5));
                                 response.EnsureSuccessStatusCode();
                                 progress.Report(0.5f);
 
@@ -248,7 +248,7 @@ namespace DeviantartDownloader.Service {
                                 var node = htmlDoc.DocumentNode.SelectNodes("//section").ToList();
                                 progress.Report(0.75f);
 
-                                string filePath = Path.Combine(destinationPath, content.Deviant.Author.Username, $"{GetLegalFileName(content.Deviant.Title)}_by_{content.Deviant.Author.Username}.html");
+                                string filePath = Path.Combine(destinationPath, content.Deviant.Author.Username, $"{GetLegalFileName(content.Deviant.Title)} by {content.Deviant.Author.Username}.html");
                                 HtmlNode textContent = node[1].InnerText.Contains("Badge Awards") ? node[2] : node[1];
                                 textContent.RemoveChild(textContent.ChildNodes[0], false);
                                 await File.WriteAllTextAsync(filePath, CreateHTMLFile(content.Deviant.Title,textContent.OuterHtml), cts.Token);
@@ -313,12 +313,50 @@ namespace DeviantartDownloader.Service {
                     <head>
                         <title>{title}</title>
                           <style>
-							    p    {"{font-size:1.1em;}"}
-						   </style>
+                              body {{
+                                 background-color: #d2decc;
+                              }}
+
+                              p {{
+                                 font-size: 1.5em;
+                                 font-weight: 450;
+                                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                              }}
+
+                              p::selection {{
+                                 background-color: #00c787;
+                              }}
+
+                              .quoTVs {{
+                                 border: 1px solid #a8b2a7;
+                                 justify-self: center;
+                                 padding: 20px;
+                                 display: flex;
+                                 justify-content: center;
+                                 background-color: #dde6d9;
+
+                                 a {{
+                                    font-size: 1.2em;
+                                    color: rgb(0, 0, 0);
+                                    text-decoration: none;
+                                 }}
+                              }}
+
+                              .title {{
+                                 text-align: center;
+                                 letter-spacing: 0.2em;
+                              }}
+
+                              .content {{
+                                 padding: 10px 25px;
+                              }}
+						 </style>
                     </head>
                     <body>
-                       <h1>{title}</h1>
-                       {outerHTML}
+                       <h1 class={"'title'"}>{title}</h1>
+                       <hr/>
+                       <div class={"'content'"}>{outerHTML} </div> 
+                       
                     </body>
                     </html>";
         }
