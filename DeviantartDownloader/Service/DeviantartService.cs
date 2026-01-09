@@ -157,7 +157,7 @@ namespace DeviantartDownloader.Service {
                 return [];
             }
         }
-        public async Task DonwloadDeviant(DownloadableDeviant content, CancellationTokenSource cts, string destinationPath, string HeaderString = "") {
+        public async Task DonwloadDeviant(DownloadableDeviant content, CancellationTokenSource cts, string destinationPath, string HeaderString = "",int literatureCount=2) {
             try {
                 content.Percent = 0;
                 content.Status = DownloadStatus.Waiting;
@@ -228,22 +228,24 @@ namespace DeviantartDownloader.Service {
                         IProgress<float> progress = Progress;
                         using(var httpClient = new HttpClient(handler)) {
                             var request = new HttpRequestMessage(HttpMethod.Get, content.Deviant.Url);
+                            request.Headers.UserAgent.ParseAdd(_userAgent[literatureCount % 10]);
                             if(HeaderString != "") {
                                 request.Headers.Add("Cookie", HeaderString);
                             }
                             progress.Report(0.25f);
 
-
-                            await Task.Delay(TimeSpan.FromSeconds(2));
                             using(var response = await httpClient.SendAsync(request, cts.Token)) {
-                               
-                                response.EnsureSuccessStatusCode();
+                                if(response.StatusCode == HttpStatusCode.Forbidden) {
+                                    content.Status = DownloadStatus.Rate_Limited;
+                                    content.DownloadSpeed = "";
+                                    return;
+                                }
                                 progress.Report(0.5f);
 
                                 string htmlContent = await response.Content.ReadAsStringAsync(cts.Token);
                                 var htmlDoc = new HtmlDocument();
                                 htmlDoc.LoadHtml(htmlContent);
-                                
+
 
                                 var node = htmlDoc.DocumentNode.SelectNodes("//section").ToList();
                                 progress.Report(0.75f);
@@ -251,13 +253,13 @@ namespace DeviantartDownloader.Service {
                                 string filePath = Path.Combine(destinationPath, content.Deviant.Author.Username, $"{GetLegalFileName(content.Deviant.Title)} by {content.Deviant.Author.Username}.html");
                                 HtmlNode textContent = node[1].InnerText.Contains("Badge Awards") ? node[2] : node[1];
                                 textContent.RemoveChild(textContent.ChildNodes[0], false);
-                                await File.WriteAllTextAsync(filePath, CreateHTMLFile(content.Deviant.Title,textContent.OuterHtml), cts.Token);
+                                await File.WriteAllTextAsync(filePath, CreateHTMLFile(content.Deviant.Title, textContent.OuterHtml), cts.Token);
                                 progress.Report(1);
 
                                 content.Status = DownloadStatus.Completed;
                             }
-                            
-                            
+
+
                         }
                         break;
                 }
@@ -313,18 +315,17 @@ namespace DeviantartDownloader.Service {
                     <head>
                         <title>{title}</title>
                           <style>
+                              *::selection{{
+                                 background-color: #00c787;
+                              }}
                               body {{
                                  background-color: #d2decc;
-                              }}
-
-                              p {{
-                                 font-size: 1.5em;
-                                 font-weight: 450;
+                                 font-size: 1.3em;
                                  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                               }}
 
-                              p::selection {{
-                                 background-color: #00c787;
+                              p {{
+                                 font-weight: 450;
                               }}
 
                               .quoTVs {{
@@ -336,12 +337,11 @@ namespace DeviantartDownloader.Service {
                                  background-color: #dde6d9;
 
                                  a {{
-                                    font-size: 1.2em;
+                                    font-size: 1em;
                                     color: rgb(0, 0, 0);
                                     text-decoration: none;
                                  }}
                               }}
-
                               .title {{
                                  text-align: center;
                                  letter-spacing: 0.2em;
@@ -353,10 +353,11 @@ namespace DeviantartDownloader.Service {
 						 </style>
                     </head>
                     <body>
-                       <h1 class={"'title'"}>{title}</h1>
+                       <h1 class='title'>{title}</h1>
                        <hr/>
-                       <div class={"'content'"}>{outerHTML} </div> 
-                       
+                       <div class='content'>
+                            {outerHTML} 
+                       </div> 
                     </body>
                     </html>";
         }
@@ -368,5 +369,17 @@ namespace DeviantartDownloader.Service {
             }
             return legalFileName;
         }
+        private List<string> _userAgent = [
+            "Pinterestbot",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 OPR/109.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.50",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_12; rv:110.0) Gecko/20110101 Firefox/110.0",
+            "Mozilla/5.0 (Linux; Android 10; LM-Q730) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Mobile Safari/537.36",
+            "Mozilla/5.0 (Linux; Android 12; M2101K7AG) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Mobile Safari/537.36",
+            "Mozilla/5.0 (Linux; Android 10; CPH1931) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Mobile Safari/537.36"
+        ];
     }
 }

@@ -73,7 +73,7 @@
                     <DataGridTextColumn IsReadOnly="True" Width="60" Binding="{Binding DisplayPercent}" Header="Percent"/>
 
 
-                    <DataGridTextColumn IsReadOnly="True" Width="60" Binding="{Binding Status}" Header="Status"/>
+                    <DataGridTextColumn IsReadOnly="True" Width="100" Binding="{Binding Status}" Header="Status"/>
 
 
                     <DataGridTextColumn IsReadOnly="True" Width="80" Binding="{Binding DownloadSpeed}" Header="Speed"/>

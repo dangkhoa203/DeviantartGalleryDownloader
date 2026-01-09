@@ -192,6 +192,7 @@ namespace DeviantartDownloader.ViewModels {
                 var throttler = new SemaphoreSlim(_queueLimit);
                 var tasks = new List<Task>();
                 using var client = new HttpClient();
+                int literatureCount = 0;
                 try {
                     foreach(var deviant in downloadQueue) {
 
@@ -199,12 +200,17 @@ namespace DeviantartDownloader.ViewModels {
                             await throttler.WaitAsync(cts.Token);
                             tasks.Add(Task.Run(async () => {
                                 try {
-                                    await DeviantartService.DonwloadDeviant(deviant, cts, DestinationPath, _headerString);
+                                    if(deviant.Deviant.Type == DeviantType.Literature) {
+                                        literatureCount += 1;
+                                    }
+                                    await DeviantartService.DonwloadDeviant(deviant, cts, DestinationPath, _headerString, literatureCount);
                                 }
                                 catch(Exception ex) {
 
                                 }
                                 finally {
+                                  
+                                   
                                     throttler.Release();
                                 }
                             }, cts.Token));

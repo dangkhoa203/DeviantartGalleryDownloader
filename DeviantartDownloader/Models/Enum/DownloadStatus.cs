@@ -10,6 +10,7 @@ namespace DeviantartDownloader.Models.Enum
         Downloading=1,
         Completed=2,
         Fail=3,
-        Canceled = 4
+        Canceled = 4,
+        Rate_Limited=5
     }
 }
