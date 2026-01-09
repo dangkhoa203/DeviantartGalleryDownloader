@@ -353,10 +353,11 @@ namespace DeviantartDownloader.Service {
 						 </style>
                     </head>
                     <body>
-                       <h1 class={"'title'"}>{title}</h1>
+                       <h1 class='title'>{title}</h1>
                        <hr/>
-                       <div class={"'content'"}>{outerHTML} </div> 
-                       
+                       <div class='content'>
+                            {outerHTML} 
+                       </div> 
                     </body>
                     </html>";
         }
