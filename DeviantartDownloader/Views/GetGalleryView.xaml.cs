@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MahApps.Metro.Controls;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -15,7 +16,7 @@ namespace DeviantartDownloader.Views
     /// <summary>
     /// Interaction logic for GetGallery.xaml
     /// </summary>
-    public partial class GetGalleryView : Window
+    public partial class GetGalleryView : MetroWindow
     {
         public GetGalleryView()
         {

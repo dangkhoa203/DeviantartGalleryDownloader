@@ -47,6 +47,15 @@ namespace DeviantartDownloader.Models
             _status = DownloadStatus.Waiting;
             _downloadSpeed = "";
         }
-        public bool? IsSelected { get; set; } = false;
+        private bool _isSeleted = false;
+        public bool IsSelected {
+            get {
+                return _isSeleted;
+            }
+            set {
+                _isSeleted = value;
+                OnPropertyChanged(nameof(IsSelected));
+            }
+        }
     }
 }

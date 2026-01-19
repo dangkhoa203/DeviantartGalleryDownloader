@@ -31,7 +31,7 @@ namespace DeviantartDownloader.ViewModels {
             _headerString = headerString;
             _queueLimit = queueLimit.ToString();
             SaveCommand = new RelayCommand(o => {
-                var Result = MessageBox.Show("Are you sure you want to save?", "Saving cookie", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                var Result = MessageBox.Show("Are you sure you want to save?", "Saving", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if(Result == MessageBoxResult.Yes) {
                     Success = true;
                     Dialog.Close();

@@ -15,5 +15,6 @@ namespace DeviantartDownloader.DTOs
         public ICollection<Content_MediaAPI>? videos { get; set; }
         public string? excerpt { get; set; }
         public bool? is_downloadable { get; set; }
+        public string? published_time   { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using DeviantartDownloader.DTOs;
+﻿using ControlzEx.Standard;
+using DeviantartDownloader.DTOs;
 using DeviantartDownloader.Extension;
 using DeviantartDownloader.Models;
 using DeviantartDownloader.Models.Enum;
@@ -110,6 +111,7 @@ namespace DeviantartDownloader.Service {
 
                         throw new Exception(result.error_description);
                     }
+                  
                     hasMore = result.has_more ?? false;
                     offSet = result.next_offset;
                     contents.AddRange(result.results ?? []);
@@ -138,8 +140,10 @@ namespace DeviantartDownloader.Service {
                                                                          .ToList()
                                                                      : null,
                                     Donwloadable = o.is_downloadable ?? false,
-                                    Type = TypeValidation(o)
+                                    Type = TypeValidation(o),
+                                    PublishDate= DateTimeOffset.FromUnixTimeSeconds(long.Parse(o.published_time)).Date
                                 })
+                                .OrderBy(o=>o.PublishDate)
                                 .ToList();
                 return deviants;
             }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MahApps.Metro.Controls;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -15,7 +16,7 @@ namespace DeviantartDownloader.Views {
     /// <summary>
     /// Interaction logic for SettingView.xaml
     /// </summary>
-    public partial class SettingView : Window {
+    public partial class SettingView : MetroWindow {
         public SettingView() {
             InitializeComponent();
         }
