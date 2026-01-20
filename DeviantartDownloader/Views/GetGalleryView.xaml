@@ -11,7 +11,10 @@
         WindowStartupLocation="CenterScreen"
         WindowTitleBrush="#06070d"
         BorderBrush="Black"
-        Title="Search Gallery" Height="800" Width="1000">
+        Title="Search Gallery" Height="800" Width="1000"
+                                  xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+Dialog:DialogParticipation.Register="{Binding}"
+                 >
     <mah:MetroWindow.Resources>
         <CollectionViewSource x:Key="deviantViewItems" Source="{Binding Deviants}"/>
     </mah:MetroWindow.Resources>

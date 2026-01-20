@@ -2,6 +2,7 @@
 using DeviantartDownloader.Models;
 using DeviantartDownloader.Models.Enum;
 using DeviantartDownloader.Service;
+using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -181,9 +182,10 @@ namespace DeviantartDownloader.ViewModels {
         public ICollectionView deviantViewItems {
             get;
         }
-
-        public GetGalleryViewModel(DeviantartService service) {
+        private IDialogCoordinator _dialogCoordinator;
+        public GetGalleryViewModel(DeviantartService service, IDialogCoordinator dialogCoordinator) {
             DeviantartService = service;
+            _dialogCoordinator= dialogCoordinator;
             deviantViewItems = CollectionViewSource.GetDefaultView(_deviants);
             RemoveDeviantFromListCommand = new RelayCommand(o => {
                 RemoveDeviantFromList(o as string ?? "");
@@ -261,13 +263,13 @@ namespace DeviantartDownloader.ViewModels {
         private async Task GetFolder() {
             if(!LoadingSearchFolder) {
                 if(SearchUserName == "") {
-                    MessageBox.Show("Username empty!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    await _dialogCoordinator.ShowMessageAsync(this, "ERROR", "Username empty!", MessageDialogStyle.Affirmative);
                     return;
                 }
                 if(SelectedUsername != SearchUserName) {
                     LoadingSearchFolder = true;
                     SearchFolderLabel = "Cancel";
-                    var f = await DeviantartService.GetFolders(SearchUserName, cts);
+                    var f = await DeviantartService.GetFolders(SearchUserName, cts,_dialogCoordinator,this);
                     if(f.Count > 0) {
                         ResetSearch();
                         GalleryFolder allFolder = new("", "All", 0);
@@ -288,6 +290,7 @@ namespace DeviantartDownloader.ViewModels {
             }
             else {
                 SearchFolderLabel = "Search";
+                ResetSearch();
                 cts.Cancel();
                 cts = new CancellationTokenSource();
                 IsComboBoxEnabled = false;
@@ -298,7 +301,7 @@ namespace DeviantartDownloader.ViewModels {
             if(!LoadingSearchDeviant) {
                 LoadingSearchDeviant = true;
                 SearchDeviantLabel = "Cancel";
-                var f = await DeviantartService.GetDeviants(SearchUserName, SelectedFolder.Id, cts);
+                var f = await DeviantartService.GetDeviants(SearchUserName, SelectedFolder.Id, cts,_dialogCoordinator,this);
                 f = f.ToList();
                 if(f.Count > 0) {
                     IsSearchable = false;

@@ -3,7 +3,9 @@ using DeviantartDownloader.DTOs;
 using DeviantartDownloader.Extension;
 using DeviantartDownloader.Models;
 using DeviantartDownloader.Models.Enum;
+using DeviantartDownloader.ViewModels;
 using HtmlAgilityPack;
+using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,9 +24,11 @@ using System.Windows.Input;
 namespace DeviantartDownloader.Service {
     public class DeviantartService {
         private string AccessToken { get; set; } = string.Empty;
+        private IDialogCoordinator _dialogCoordinator;
         private DateTime? KeyTime { get; set; } = null;
         private HttpClient _httpClient;
-        public DeviantartService() {
+        public DeviantartService(IDialogCoordinator dialogCoordinator) {
+            _dialogCoordinator = dialogCoordinator;
             _httpClient = new HttpClient();
         }
 
@@ -44,11 +48,11 @@ namespace DeviantartDownloader.Service {
                 return false;
             }
         }
-        public async Task<ICollection<GalleryFolder>> GetFolders(string userName, CancellationTokenSource cts) {
+        public async Task<ICollection<GalleryFolder>> GetFolders(string userName, CancellationTokenSource cts,IDialogCoordinator dialogCoordinator,ViewModel view) {
 
             try {
                 if(!await GetAccessToken())
-                    throw new Exception("Fail autho");
+                    throw new Exception("Fail authenticate");
 
                 int? offSet = 0;
                 bool hasMore = true;
@@ -74,29 +78,29 @@ namespace DeviantartDownloader.Service {
                                                 .OrderBy(o => o.Name)
                                                 .ToList();
                 if(folders.Count > 0) {
-                    MessageBox.Show("Search completed", "Action completed", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    await _dialogCoordinator.ShowMessageAsync(view, "ALERT", "Search completed!", MessageDialogStyle.Affirmative);
                 }
                 return folders;
             }
             catch(TaskCanceledException ex) {
                 if(ex.CancellationToken == cts.Token) {
-                    MessageBox.Show("Operation canceled", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                    await _dialogCoordinator.ShowMessageAsync(view, "ALERT", "Operation canceled!", MessageDialogStyle.Affirmative);
                 }
                 else {
-                    MessageBox.Show("Timeout", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    await _dialogCoordinator.ShowMessageAsync(view, "ERROR", "Timeout!", MessageDialogStyle.Affirmative);
                 }
                 return [];
             }
             catch(Exception ex) {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                await _dialogCoordinator.ShowMessageAsync(view, "ERROR", ex.Message, MessageDialogStyle.Affirmative);
                 return [];
             }
         }
-        public async Task<ICollection<Deviant>> GetDeviants(string userName, string folderId, CancellationTokenSource cts) {
+        public async Task<ICollection<Deviant>> GetDeviants(string userName, string folderId, CancellationTokenSource cts, IDialogCoordinator dialogCoordinator, ViewModel view) {
 
             try {
                 if(!await GetAccessToken())
-                    throw new Exception("Fail autho");
+                    throw new Exception("Fail authenticate");
 
                 int? offSet = 0;
                 bool hasMore = true;
@@ -149,15 +153,15 @@ namespace DeviantartDownloader.Service {
             }
             catch(TaskCanceledException ex) {
                 if(ex.CancellationToken == cts.Token) {
-                    MessageBox.Show("Operation canceled", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                    await _dialogCoordinator.ShowMessageAsync(view, "ALERT", "Operation canceled!", MessageDialogStyle.Affirmative);
                 }
                 else {
-                    MessageBox.Show("Timeout", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    await _dialogCoordinator.ShowMessageAsync(view, "ERROR", "Timeout!", MessageDialogStyle.Affirmative);
                 }
                 return [];
             }
             catch(Exception ex) {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                await _dialogCoordinator.ShowMessageAsync(view, "ERROR", ex.Message, MessageDialogStyle.Affirmative);
                 return [];
             }
         }
@@ -186,7 +190,6 @@ namespace DeviantartDownloader.Service {
                             var downloadContent = JsonSerializer.Deserialize<Response_GetDonwloadContent>(jsonResponse);
 
                             if(downloadContent.error != null) {
-                                MessageBox.Show(downloadContent.error_description, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                                 throw new Exception(downloadContent.error_description);
                             }
 

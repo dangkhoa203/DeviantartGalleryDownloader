@@ -2,6 +2,7 @@
 using DeviantartDownloader.Service.Interface;
 using DeviantartDownloader.ViewModels;
 using DeviantartDownloader.Views;
+using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Extensions.DependencyInjection;
 using System.Configuration;
 using System.Data;
@@ -23,6 +24,7 @@ namespace DeviantartDownloader
             services.AddSingleton<SettingViewModel>();
             services.AddSingleton<MainWindow>();
             services.AddSingleton<DeviantartService>();
+            services.AddSingleton<IDialogCoordinator, DialogCoordinator>();
         }
         public App() {
             IServiceCollection services = new ServiceCollection();

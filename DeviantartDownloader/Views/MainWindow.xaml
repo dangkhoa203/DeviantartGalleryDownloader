@@ -13,6 +13,8 @@
         WindowStartupLocation="CenterScreen"
         WindowTitleBrush="#06070d"
                  BorderBrush="Black"
+                 xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+                 Dialog:DialogParticipation.Register="{Binding}"
         >
     <mah:MetroWindow.Resources>
         <CollectionViewSource x:Key="downloadViewItems" Source="{Binding DownloadList}"/>

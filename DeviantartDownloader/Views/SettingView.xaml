@@ -11,7 +11,10 @@
        WindowTitleBrush="#06070d"
                  Background="#d4dfd0"
         BorderBrush="Black"
-        xmlns:vm="clr-namespace:DeviantartDownloader.ViewModels" d:DataContext="{d:DesignInstance Type=vm:SettingViewModel}">
+        xmlns:vm="clr-namespace:DeviantartDownloader.ViewModels" d:DataContext="{d:DesignInstance Type=vm:SettingViewModel}"
+                 xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+Dialog:DialogParticipation.Register="{Binding}"
+                 >
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="375"/>

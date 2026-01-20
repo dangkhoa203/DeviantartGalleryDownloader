@@ -3,6 +3,7 @@ using DeviantartDownloader.Models;
 using DeviantartDownloader.Models.Enum;
 using DeviantartDownloader.Service;
 using DeviantartDownloader.Service.Interface;
+using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using System;
 using System.Collections.Concurrent;
@@ -23,6 +24,7 @@ using static System.Net.Mime.MediaTypeNames;
 namespace DeviantartDownloader.ViewModels {
     public class MainWindowViewModel : ViewModel {
         private readonly IDialogService _dialogService;
+        private IDialogCoordinator _dialogCoordinator;
         public DeviantartService DeviantartService {
             get; set;
         }
@@ -128,8 +130,9 @@ namespace DeviantartDownloader.ViewModels {
             get;
         }
 
-        public MainWindowViewModel(IDialogService service, DeviantartService client) {
+        public MainWindowViewModel(IDialogService service, DeviantartService client,IDialogCoordinator dialogCoordinator) {
             DeviantartService = client;
+            _dialogCoordinator = dialogCoordinator;
             _dialogService = service;
             downloadViewItems = CollectionViewSource.GetDefaultView(_downloadList);
             RemoveDeviantFromListCommand = new RelayCommand(o => {
@@ -210,8 +213,8 @@ namespace DeviantartDownloader.ViewModels {
             }
         }
         private void ShowSearchGalleryDialog() {
-            var viewModel = _dialogService.ShowDialog<GetGalleryViewModel>(new GetGalleryViewModel(DeviantartService));
-
+            var viewModel = _dialogService.ShowDialog<GetGalleryViewModel>(new GetGalleryViewModel(DeviantartService,_dialogCoordinator));
+            
             if(viewModel.Success) {
                 foreach(var deviant in viewModel.deviantViewItems.Cast<Deviant>().ToList()) {
                     var downloadableDeviant = DownloadList.FirstOrDefault(o => o.Deviant.Id == deviant.Id);
@@ -228,7 +231,7 @@ namespace DeviantartDownloader.ViewModels {
             }
         }
         private void ShowSettingDialog() {
-            var viewModel = _dialogService.ShowDialog<SettingViewModel>(new SettingViewModel(_headerString, _queueLimit));
+            var viewModel = _dialogService.ShowDialog<SettingViewModel>(new SettingViewModel(_headerString, _queueLimit,_dialogCoordinator));
             if(viewModel.Success) {
                 _headerString = viewModel.HeaderString;
                 _queueLimit = int.Parse(viewModel.QueueLimit);
@@ -238,9 +241,8 @@ namespace DeviantartDownloader.ViewModels {
         }
         private async Task DownloadDeviant() {
             if(!IsDownloading) {
-
                 if(!Directory.Exists(DestinationPath)) {
-                    MessageBox.Show("Path not found!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    await _dialogCoordinator.ShowMessageAsync(this, "ERROR", "Path not found!");
                     return;
                 }
                 DownloadLabel = "Cancel";
@@ -273,36 +275,23 @@ namespace DeviantartDownloader.ViewModels {
                             }, cts.Token));
                         }
                     }
-
                     await Task.WhenAll(tasks);
-
-                    var test = DownloadList.ToList();
-                    DownloadList.Clear();
-                    foreach(var d in test) {
-                        DownloadList.Add(d);
-                    }
                     IsDownloading = false;
                     DownloadLabel = "Download";
+                    await _dialogCoordinator.ShowMessageAsync(this, "ALERT", "Donwload completed!");
                 }
                 catch {
 
                 }
-                finally {
-                    MessageBox.Show("Download completed!", "Download", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                }
+           
 
             }
             else {
                 cts.Cancel();
                 DownloadLabel = "Download";
                 IsDownloading = false;
-                var test = DownloadList.ToList();
-                DownloadList.Clear();
-                foreach(var d in test) {
-                    DownloadList.Add(d);
-                }
                 cts = new CancellationTokenSource();
-                MessageBox.Show("Opperation canceled", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                await _dialogCoordinator.ShowMessageAsync(this, "ALERT", "Cancel download!");
             }
         }
         private void SelectDeviantType(DeviantType deviantType) {
