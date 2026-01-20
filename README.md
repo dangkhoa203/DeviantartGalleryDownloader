@@ -10,7 +10,8 @@ You can download the latest version at [here](https://github.com/dangkhoa203/Dev
 1. Home menu
 <img width="1440" height="938" alt="image" src="https://github.com/user-attachments/assets/6d881d45-456c-4ad2-b1f8-9a6078c87e4e" />
 <img width="1440" height="938" alt="image" src="https://github.com/user-attachments/assets/64f17bde-4e8c-423b-8f99-9de351a7e001" />
-<img width="1440" height="938" alt="image" src="https://github.com/user-attachments/assets/acad966b-05cf-4357-9df3-52810f5b291c" />
+<img width="1440" height="938" alt="image" src="https://github.com/user-attachments/assets/59ccfd9e-d8ac-461b-aa42-f6113f0eef20" />
+
 
 
 
