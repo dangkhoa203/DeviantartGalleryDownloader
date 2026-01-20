@@ -11,6 +11,8 @@
         WindowStartupLocation="CenterScreen"
         WindowTitleBrush="#06070d"
         BorderBrush="Black"
+                 Icon="/Icon/Icon.ico"
+ShowIconOnTitleBar="False"
         Title="Search Gallery" Height="800" Width="1000"
                                   xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
 Dialog:DialogParticipation.Register="{Binding}"

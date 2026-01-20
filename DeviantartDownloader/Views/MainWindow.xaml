@@ -8,6 +8,8 @@
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
+                 Icon="/Icon/Icon.ico"
+                 ShowIconOnTitleBar="False"
         Title="Deviantart Downloader" Height="750" Width="1000"
         Background="#d4dfd0"
         WindowStartupLocation="CenterScreen"
@@ -15,6 +17,7 @@
                  BorderBrush="Black"
                  xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                  Dialog:DialogParticipation.Register="{Binding}"
+
         >
     <mah:MetroWindow.Resources>
         <CollectionViewSource x:Key="downloadViewItems" Source="{Binding DownloadList}"/>

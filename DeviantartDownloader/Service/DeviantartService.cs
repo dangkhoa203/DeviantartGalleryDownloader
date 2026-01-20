@@ -312,13 +312,17 @@ namespace DeviantartDownloader.Service {
             return FileType.unknown;
         }
         private string CreateHTMLFile(string title, HtmlNode outerHTML) {
-            var figureCheck = outerHTML.SelectNodes(".//figure").ToList();
-            foreach(var f in figureCheck) {
-                f.AddClass("quoTVs");
-                var section=f.SelectSingleNode(".//section");
-                section.Attributes[1].Remove();
-                section.RemoveChild(section.FirstChild, false);
+            var figureCheck = outerHTML.SelectNodes(".//figure")?.ToList();
+            if(figureCheck != null) {
+                foreach(var f in figureCheck) {
+                    f.AddClass("quoTVs");
+                    var section = f.SelectSingleNode(".//section");
+                    if(section != null) {
+                        section.RemoveChild(section.FirstChild, false);
+                    }
+                }
             }
+
             return $@"
                     <html>
                     <head>

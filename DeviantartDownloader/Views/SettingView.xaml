@@ -6,6 +6,8 @@
         xmlns:local="clr-namespace:DeviantartDownloader.Views"
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
+                 Icon="/Icon/Icon.ico"
+ShowIconOnTitleBar="False"
         Title="Setting" Height="500" ResizeMode="NoResize" Width="800"
         WindowStartupLocation="CenterScreen"
        WindowTitleBrush="#06070d"
