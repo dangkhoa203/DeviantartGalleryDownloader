@@ -8,15 +8,23 @@ You can download the latest version at [here](https://github.com/dangkhoa203/Dev
 * **📝 Literature Downloading:** Save literature into a html file.
 # Usage Example
 1. Home menu
-    <img width="1234" height="930" alt="image" src="https://github.com/user-attachments/assets/2ff94519-0bff-43c1-a1e7-cdb13ff297e0" />
-    <img width="1234" height="930" alt="image" src="https://github.com/user-attachments/assets/db898eb7-86a7-4c45-94d6-6e592b01ae7b" />
-    <img width="1234" height="930" alt="image" src="https://github.com/user-attachments/assets/15add795-e790-4e50-9633-79fb298f4f5b" />
+<img width="1440" height="938" alt="image" src="https://github.com/user-attachments/assets/6d881d45-456c-4ad2-b1f8-9a6078c87e4e" />
+<img width="1440" height="938" alt="image" src="https://github.com/user-attachments/assets/64f17bde-4e8c-423b-8f99-9de351a7e001" />
+<img width="1440" height="938" alt="image" src="https://github.com/user-attachments/assets/acad966b-05cf-4357-9df3-52810f5b291c" />
+
+
 
 2. Gallery search
-   <img width="1234" height="992" alt="image" src="https://github.com/user-attachments/assets/35f07e76-f14d-4f6b-a776-ab3fdc3c4321" />
-   <img width="1234" height="992" alt="image" src="https://github.com/user-attachments/assets/854eca3f-f212-46fc-a1ed-0077e42ab7f6" />
-   <img width="1234" height="992" alt="image" src="https://github.com/user-attachments/assets/c8a1152f-2d9e-48e0-9532-d6680129e449" />
+  <img width="1440" height="1000" alt="image" src="https://github.com/user-attachments/assets/ed9144c1-1f1d-45a2-a658-785569796930" />
+<img width="1440" height="1000" alt="image" src="https://github.com/user-attachments/assets/65af7563-fb0f-4dc9-a54a-3cf7348acebc" />
+<img width="1440" height="1000" alt="image" src="https://github.com/user-attachments/assets/10f53045-37da-47bc-a3e3-3cf555d74a11" />
+
 
 3. Cookie setting
-   <img width="984" height="617" alt="image" src="https://github.com/user-attachments/assets/bef709ca-5a95-4fe3-bd6c-6b56a89bca70" />
-   <img width="984" height="617" alt="image" src="https://github.com/user-attachments/assets/89b07f95-2db4-4424-80d6-fd63e67a9a08" />
+<img width="1000" height="625" alt="image" src="https://github.com/user-attachments/assets/562200b7-d78d-4329-b2c1-52f29cdad03f" />
+<img width="1000" height="625" alt="image" src="https://github.com/user-attachments/assets/fe811249-39f8-403b-b1e9-36af9562ca70" />
+4. Literature content
+   <img width="1898" height="832" alt="image" src="https://github.com/user-attachments/assets/ea8a154f-6060-4eae-bf29-288434737dd4" />
+
+
+
