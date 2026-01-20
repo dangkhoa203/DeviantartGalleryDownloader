@@ -193,7 +193,7 @@ namespace DeviantartDownloader.Service {
                                 await _httpClient.DownloadAsync(downloadContent.src, file, Speed, Progress, cts.Token);
                             }
                             content.Status = DownloadStatus.Completed;
-                            content.Percent = 1;
+                            content.Percent = 100;
                         }
                         else {
                             FileType imgType = GetFileType(content.Deviant.Content.Src);
@@ -206,7 +206,7 @@ namespace DeviantartDownloader.Service {
                             }
 
                             content.Status = DownloadStatus.Completed;
-                            content.Percent = 1;
+                            content.Percent = 100;
                         }
                         break;
 
@@ -222,7 +222,7 @@ namespace DeviantartDownloader.Service {
                         }
 
                         content.Status = DownloadStatus.Completed;
-                        content.Percent = 1;
+                        content.Percent = 100;
                         break;
 
                     case DeviantType.Literature:
