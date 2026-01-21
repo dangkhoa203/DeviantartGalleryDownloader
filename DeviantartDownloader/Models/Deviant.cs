@@ -19,7 +19,7 @@ namespace DeviantartDownloader.Models {
         public MediaContent? Content { get; set; }
         public ICollection<MediaContent>? Video { get; set; }
         public DeviantType Type { get; set; }
-        public bool Donwloadable { get; set; }
+        public bool Downloadable { get; set; }
         public DateTime PublishDate { get; set; }
         
     }

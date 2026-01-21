@@ -22,29 +22,54 @@ using System.Threading;
 namespace DeviantartDownloader.Service {
     public class DeviantartService {
         private string AccessToken { get; set; } = string.Empty;
-        private DateTime? KeyTime { get; set; } = null;
+        public string? RefreshToken {
+            get; set;
+        }
+        public DateTime? KeyTime { get; set; } = null;
         private HttpClient _httpClient;
         public DeviantartService() {
             _httpClient = new HttpClient();
         }
 
-        public async Task<bool> GetAccessToken() {
+        public async Task<bool> GetUserAccessToken(string code) {
             try {
-                if(KeyTime == null || KeyTime < DateTime.Now) {
-                    using HttpResponseMessage response = await _httpClient.GetAsync("https://www.deviantart.com/oauth2/token?client_id=58502&client_secret=54daa2749cd91ed21c28850b0a3be0a8&grant_type=client_credentials");
-                    response.EnsureSuccessStatusCode();
-                    var jsonResponse = await response.Content.ReadAsStringAsync();
-                    var result = JsonSerializer.Deserialize<Response_Authenticate>(jsonResponse);
-                    AccessToken = result.access_token;
-                    KeyTime = DateTime.Now.AddHours(1);
-                }
+                using HttpResponseMessage response = await _httpClient.GetAsync($"https://www.deviantart.com/oauth2/token?client_id=60309&client_secret=145f67512a11b4bd24380e1acafc8cf1&grant_type=authorization_code&redirect_uri=https://dangkhoa203.github.io/GetDeviantartCode&code={code}");
+                response.EnsureSuccessStatusCode();
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<Response_Authenticate>(jsonResponse);
+                AccessToken = result.access_token;
+                RefreshToken = result.refresh_token;
+                KeyTime = DateTime.Now.AddHours(1);
                 return true;
             }
             catch {
                 return false;
             }
         }
-        public async Task<ICollection<GalleryFolder>> GetFolders(string userName, CancellationTokenSource cts,IDialogCoordinator dialogCoordinator,ViewModel view) {
+        public async Task<bool> GetAccessToken() {
+            try {
+                if(KeyTime == null || KeyTime < DateTime.Now) {
+                    string URL = RefreshToken != null ?
+                        $"https://www.deviantart.com/oauth2/token?client_id=60309&client_secret=145f67512a11b4bd24380e1acafc8cf1&grant_type=refresh_token&refresh_token={RefreshToken}"
+                          :
+                        "https://www.deviantart.com/oauth2/token?client_id=60309&client_secret=145f67512a11b4bd24380e1acafc8cf1&grant_type=client_credentials";
+                    using HttpResponseMessage response = await _httpClient.GetAsync(URL);
+
+                    response.EnsureSuccessStatusCode();
+                    var jsonResponse = await response.Content.ReadAsStringAsync();
+                    var result = JsonSerializer.Deserialize<Response_Authenticate>(jsonResponse);
+                    AccessToken = result.access_token;
+                    RefreshToken = result.refresh_token;
+                    KeyTime = DateTime.Now.AddHours(1);
+                }
+                return true;
+            }
+            catch {
+                RefreshToken = null;
+                return false;
+            }
+        }
+        public async Task<ICollection<GalleryFolder>> GetFolders(string userName, CancellationTokenSource cts, IDialogCoordinator dialogCoordinator, ViewModel view) {
 
             try {
                 if(!await GetAccessToken())
@@ -111,7 +136,7 @@ namespace DeviantartDownloader.Service {
 
                         throw new Exception(result.error_description);
                     }
-                  
+
                     hasMore = result.has_more ?? false;
                     offSet = result.next_offset;
                     contents.AddRange(result.results ?? []);
@@ -139,11 +164,11 @@ namespace DeviantartDownloader.Service {
                                                                          })
                                                                          .ToList()
                                                                      : null,
-                                    Donwloadable = o.is_downloadable ?? false,
+                                    Downloadable = o.is_downloadable ?? false,
                                     Type = TypeValidation(o),
-                                    PublishDate= DateTimeOffset.FromUnixTimeSeconds(long.Parse(o.published_time)).Date
+                                    PublishDate = DateTimeOffset.FromUnixTimeSeconds(long.Parse(o.published_time)).Date
                                 })
-                                .OrderBy(o=>o.PublishDate)
+                                .OrderBy(o => o.PublishDate)
                                 .ToList();
                 return deviants;
             }
@@ -161,7 +186,7 @@ namespace DeviantartDownloader.Service {
                 return [];
             }
         }
-        public async Task DonwloadDeviant(DownloadableDeviant content, CancellationTokenSource cts, string destinationPath, string HeaderString = "",int literatureCount=2) {
+        public async Task DownloadDeviant(DownloadableDeviant content, CancellationTokenSource cts, string destinationPath, string HeaderString = "", int literatureCount = 2) {
             try {
                 content.Percent = 0;
                 content.Status = DownloadStatus.Waiting;
@@ -179,17 +204,17 @@ namespace DeviantartDownloader.Service {
 
                 switch(content.Deviant.Type) {
                     case DeviantType.Art:
-                        if(content.Deviant.Donwloadable) {
+                        if(content.Deviant.Downloadable) {
                             string request = $"https://www.deviantart.com/api/v1/oauth2/deviation/download/{content.Deviant.Id}?access_token={AccessToken}";
                             using HttpResponseMessage getDownloadresponse = await _httpClient.GetAsync(request, HttpCompletionOption.ResponseContentRead, cts.Token);
                             var jsonResponse = await getDownloadresponse.Content.ReadAsStringAsync();
-                            var downloadContent = JsonSerializer.Deserialize<Response_GetDonwloadContent>(jsonResponse);
+                            var downloadContent = JsonSerializer.Deserialize<Response_GetDownloadContent>(jsonResponse);
 
                             if(downloadContent.error != null) {
                                 throw new Exception(downloadContent.error_description);
                             }
 
-                            using(var file = new FileStream(Path.Combine(destinationPath, content.Deviant.Author.Username, $"[{content.Deviant.PublishDate.Date.ToString("dd-MM-yyyy")}] "+downloadContent.filename), FileMode.Create, FileAccess.Write, FileShare.None)) {
+                            using(var file = new FileStream(Path.Combine(destinationPath, content.Deviant.Author.Username, $"[{content.Deviant.PublishDate.Date.ToString("dd-MM-yyyy")}] " + downloadContent.filename), FileMode.Create, FileAccess.Write, FileShare.None)) {
                                 await _httpClient.DownloadAsync(downloadContent.src, file, Speed, Progress, cts.Token);
                             }
                             content.Status = DownloadStatus.Completed;
@@ -201,7 +226,7 @@ namespace DeviantartDownloader.Service {
                                 throw new Exception("Unknow File Type");
                             }
 
-                            using(var file = new FileStream(Path.Combine(destinationPath, content.Deviant.Author.Username, $"[{content.Deviant.PublishDate.Date.ToString("dd-MM-yyyy")}] {GetLegalFileName(content.Deviant.Title)} by {content.Deviant.Author.Username}.{imgType.ToString()}"), FileMode.Create, FileAccess.Write, FileShare.None)) {
+                            using(var file = new FileStream(Path.Combine(destinationPath, content.Deviant.Author.Username, $"[{content.Deviant.PublishDate.Date.ToString("dd-MM-yyyy")}] {GetLegalFileName(content.Deviant.Title)} by {content.Deviant.Author.Username}_{content.Deviant.Url.Substring(content.Deviant.Url.Length - 10)}.{imgType.ToString()}"), FileMode.Create, FileAccess.Write, FileShare.None)) {
                                 await _httpClient.DownloadAsync(content.Deviant.Content.Src, file, Speed, Progress, cts.Token);
                             }
 
@@ -217,7 +242,7 @@ namespace DeviantartDownloader.Service {
                             throw new Exception("Unknow File Type");
                         }
 
-                        using(var file = new FileStream(Path.Combine(destinationPath, content.Deviant.Author.Username, $"[{content.Deviant.PublishDate.Date.ToString("dd-MM-yyyy")}] {GetLegalFileName(content.Deviant.Title)} by {content.Deviant.Author.Username}.{videoType.ToString()}"), FileMode.Create, FileAccess.Write, FileShare.None)) {
+                        using(var file = new FileStream(Path.Combine(destinationPath, content.Deviant.Author.Username, $"[{content.Deviant.PublishDate.Date.ToString("dd-MM-yyyy")}] {GetLegalFileName(content.Deviant.Title)} by {content.Deviant.Author.Username}_{content.Deviant.Url.Substring(content.Deviant.Url.Length - 10)}.{videoType.ToString()}"), FileMode.Create, FileAccess.Write, FileShare.None)) {
                             await _httpClient.DownloadAsync(video.Src, file, Speed, Progress, cts.Token);
                         }
 
@@ -254,7 +279,7 @@ namespace DeviantartDownloader.Service {
                                 var literatureText = htmlDoc.DocumentNode.SelectNodes("//section").ToList();
                                 progress.Report(0.75f);
 
-                                string filePath = Path.Combine(destinationPath, content.Deviant.Author.Username, $"[{content.Deviant.PublishDate.Date.ToString("dd-MM-yyyy")}] {GetLegalFileName(content.Deviant.Title)} by {content.Deviant.Author.Username}.html");
+                                string filePath = Path.Combine(destinationPath, content.Deviant.Author.Username, $"[{content.Deviant.PublishDate.Date.ToString("dd-MM-yyyy")}] {GetLegalFileName(content.Deviant.Title)} by {content.Deviant.Author.Username}_{content.Deviant.Url.Substring(content.Deviant.Url.Length - 10)}.html");
                                 HtmlNode textContent = literatureText[1].InnerText.Contains("Badge Awards") ? literatureText[2] : literatureText[1];
                                 textContent.RemoveChild(textContent.ChildNodes[0], false);
                                 await File.WriteAllTextAsync(filePath, CreateHTMLFile(content.Deviant.Title, textContent), cts.Token);

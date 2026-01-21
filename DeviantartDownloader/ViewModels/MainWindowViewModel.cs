@@ -24,7 +24,6 @@ using static System.Net.Mime.MediaTypeNames;
 namespace DeviantartDownloader.ViewModels {
     public class MainWindowViewModel : ViewModel {
         private readonly IDialogService _dialogService;
-
         private IDialogCoordinator _dialogCoordinator;
 
         private string _headerString = "";
@@ -103,6 +102,9 @@ namespace DeviantartDownloader.ViewModels {
         public RelayCommand ShowSettingDialogCommand {
             get; set;
         }
+        public RelayCommand ShowKeySettingDialogCommand {
+            get; set;
+        }
         public RelayCommand RemoveDeviantFromListCommand {
             get; set;
         }
@@ -156,7 +158,9 @@ namespace DeviantartDownloader.ViewModels {
             ShowSettingDialogCommand = new RelayCommand(o => {
                 ShowSettingDialog();
             }, o => !IsDownloading);
-
+            ShowKeySettingDialogCommand = new RelayCommand(o => {
+                ShowKeySettingDialog();
+            }, o => !IsDownloading);
             DownloadDeviantCommand = new RelayCommand(async o => {
                 await DownloadDeviant();
             }, o => { return DownloadList.Where(o => o.Status != DownloadStatus.Completed).ToList().Count > 0; });
@@ -235,6 +239,12 @@ namespace DeviantartDownloader.ViewModels {
                 _queueLimit = int.Parse(viewModel.QueueLimit);
             }
         }
+        private void ShowKeySettingDialog() {
+            var viewModel = _dialogService.ShowDialog<KeySettingViewModel>(new KeySettingViewModel(_deviantartService, _dialogCoordinator));
+            if(viewModel.Success) {
+                
+            }
+        }
         private async Task DownloadDeviant() {
             if(!IsDownloading) {
                 if(!Directory.Exists(DestinationPath)) {
@@ -256,7 +266,7 @@ namespace DeviantartDownloader.ViewModels {
                                     if(deviant.Deviant.Type == DeviantType.Literature) {
                                         literatureCount += 1;
                                     }
-                                    await _deviantartService.DonwloadDeviant(deviant, cts, DestinationPath, _headerString, literatureCount);
+                                    await _deviantartService.DownloadDeviant(deviant, cts, DestinationPath, _headerString, literatureCount);
                                 }
                                 catch(Exception ex) {
 
@@ -270,7 +280,7 @@ namespace DeviantartDownloader.ViewModels {
                     await Task.WhenAll(tasks);
                     IsDownloading = false;
                     DownloadLabel = "Download";
-                    await _dialogCoordinator.ShowMessageAsync(this, "ALERT", "Donwload completed!");
+                    await _dialogCoordinator.ShowMessageAsync(this, "ALERT", "Download completed!");
                 }
                 catch {
                 }

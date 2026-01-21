@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace DeviantartDownloader.DTOs {
-    internal class Response_GetDonwloadContent {
+    internal class Response_GetDownloadContent {
         public string? src {  get; set; }
         public string? filename { get; set; }
         public int? filesize { get; set; }

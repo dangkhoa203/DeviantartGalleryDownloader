@@ -58,6 +58,23 @@
                     </DataTemplate>
                 </Button.ContentTemplate>
             </Button>
+            <Button Command="{Binding ShowKeySettingDialogCommand}"
+                    Cursor="Hand"
+                    ToolTip="Setting"
+                    Content=""> 
+                <Button.ContentTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconFontAwesome  Kind="KeySolid"
+                                                Width="22" Height="22"
+                                                VerticalAlignment="Center"/>
+                            <TextBlock  Margin="4 0 0 0"
+                            VerticalAlignment="Center"
+                            Text="" />
+                        </StackPanel>
+                    </DataTemplate>
+                </Button.ContentTemplate>
+            </Button>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
     <Grid RowDefinitions="80,50,*,50,50">
