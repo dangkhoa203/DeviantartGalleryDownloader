@@ -20,9 +20,6 @@ namespace DeviantartDownloader
         private void ConfigureService(IServiceCollection services) {
             services.AddSingleton<IDialogService, DialogService>();
             services.AddSingleton<MainWindowViewModel>();
-            services.AddSingleton<GetGalleryViewModel>();
-            services.AddSingleton<KeySettingViewModel>();
-            services.AddSingleton<SettingViewModel>();
             services.AddSingleton<MainWindow>();
             services.AddSingleton<DeviantartService>();
             services.AddSingleton<IDialogCoordinator, DialogCoordinator>();
