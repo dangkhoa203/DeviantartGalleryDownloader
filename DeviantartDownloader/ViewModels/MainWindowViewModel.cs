@@ -27,7 +27,7 @@ namespace DeviantartDownloader.ViewModels {
         private IDialogCoordinator _dialogCoordinator;
 
         private string _headerString = "";
-        private int _queueLimit { get; set; } = 2;
+        private int _queueLimit { get; set; } = 3;
         public ICollectionView downloadViewItems {
             get;
         }
@@ -80,6 +80,8 @@ namespace DeviantartDownloader.ViewModels {
         }
 
         private bool _isSelectAll = false;
+        private DownloadStatus? _downloadStatusMode = null;
+        private DeviantType? _downloadTypeMode = null;
         public bool IsSelectAll {
             get {
                 return _isSelectAll;
@@ -103,6 +105,9 @@ namespace DeviantartDownloader.ViewModels {
             get; set;
         }
         public RelayCommand ShowKeySettingDialogCommand {
+            get; set;
+        }
+        public RelayCommand ShowDownloadSettingDialogCommand {
             get; set;
         }
         public RelayCommand RemoveDeviantFromListCommand {
@@ -158,12 +163,21 @@ namespace DeviantartDownloader.ViewModels {
             ShowSettingDialogCommand = new RelayCommand(o => {
                 ShowSettingDialog();
             }, o => !IsDownloading);
+
             ShowKeySettingDialogCommand = new RelayCommand(o => {
                 ShowKeySettingDialog();
             }, o => !IsDownloading);
+
+            ShowDownloadSettingDialogCommand = new RelayCommand(o => {
+                ShowDownloadModeDialog();
+            }, o => !IsDownloading);
+
             DownloadDeviantCommand = new RelayCommand(async o => {
                 await DownloadDeviant();
-            }, o => { return DownloadList.Where(o => o.Status != DownloadStatus.Completed).ToList().Count > 0; });
+            }, o => { return DownloadList.Where(o => o.Status != DownloadStatus.Completed)
+                                         .Where(o => _downloadStatusMode != null ? o.Status==_downloadStatusMode : true)
+                                         .Where(o=> _downloadTypeMode!=null ? o.Deviant.Type==_downloadTypeMode : true)
+                                         .ToList().Count > 0; });
 
             SelectAllArtCommand = new RelayCommand(o => {
                 SelectDeviantType(DeviantType.Art);
@@ -245,8 +259,16 @@ namespace DeviantartDownloader.ViewModels {
                 
             }
         }
+        private void ShowDownloadModeDialog() {
+            var viewModel = _dialogService.ShowDialog<DownloadModeViewModel>(new DownloadModeViewModel(_dialogCoordinator,_downloadTypeMode,_downloadStatusMode));
+            if(viewModel.Success) {
+                _downloadTypeMode = viewModel.SelectedType;
+                _downloadStatusMode = viewModel.SelectedStatus;
+            }
+        }
         private async Task DownloadDeviant() {
             if(!IsDownloading) {
+                cts = new CancellationTokenSource();
                 if(!Directory.Exists(DestinationPath)) {
                     await _dialogCoordinator.ShowMessageAsync(this, "ERROR", "Path not found!");
                     return;
@@ -258,7 +280,15 @@ namespace DeviantartDownloader.ViewModels {
                 var tasks = new List<Task>();
                 int literatureCount = 0;
                 try {
-                    foreach(var deviant in downloadViewItems.Cast<DownloadableDeviant>().ToList()) {
+                    var downloadList = downloadViewItems.Cast<DownloadableDeviant>();
+                    if(_downloadTypeMode != null) {
+                        downloadList=downloadList.Where(o=>o.Deviant.Type==_downloadTypeMode);
+                    }
+                    if(_downloadStatusMode != null) {
+                        downloadList=downloadList.Where(o => o.Status == _downloadStatusMode);
+                    }
+                    downloadList = downloadList.ToList();
+                    foreach(var deviant in downloadList) {
                         if(deviant.Status != DownloadStatus.Completed) {
                             await throttler.WaitAsync(cts.Token);
                             tasks.Add(Task.Run(async () => {
@@ -280,7 +310,9 @@ namespace DeviantartDownloader.ViewModels {
                     await Task.WhenAll(tasks);
                     IsDownloading = false;
                     DownloadLabel = "Download";
-                    await _dialogCoordinator.ShowMessageAsync(this, "ALERT", "Download completed!");
+                    if(!cts.IsCancellationRequested) {
+                        await _dialogCoordinator.ShowMessageAsync(this, "ALERT", "Download completed!");
+                    }
                 }
                 catch {
                 }
@@ -289,7 +321,6 @@ namespace DeviantartDownloader.ViewModels {
                 cts.Cancel();
                 DownloadLabel = "Download";
                 IsDownloading = false;
-                cts = new CancellationTokenSource();
                 await _dialogCoordinator.ShowMessageAsync(this, "ALERT", "Cancel download!");
             }
         }

@@ -61,7 +61,7 @@
             <Button Command="{Binding ShowKeySettingDialogCommand}"
                     Cursor="Hand"
                     ToolTip="Key Setting"
-                    Content=""> 
+                    Content="">
                 <Button.ContentTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -135,66 +135,88 @@
         </Grid>
         <Grid Grid.Row="2" 
               ColumnDefinitions="150,*" >
-            <StackPanel Grid.Column="0" 
-                        Margin="10,20,0,0">
-                <Button mah:ControlsHelper.ContentCharacterCasing="Upper"
+            <Grid Grid.Column="0"
+                  RowDefinitions="*,40">
+                <StackPanel Grid.Row="0" 
+                            Margin="10,20,0,0">
+                    <Button mah:ControlsHelper.ContentCharacterCasing="Upper"
+                            mah:ControlsHelper.FocusBorderBrush="#93a98f"
+                            mah:ControlsHelper.MouseOverBorderBrush="#93a98f"
+                            BorderBrush="#93a98f"
+                            Command="{Binding SelectAllArtCommand}"
+                            Foreground="#337287"
+                            Cursor="Hand"
+                            Margin="0,0,0,20" Height="30"
+                            Content="Select all art"/>
+                    <Button mah:ControlsHelper.ContentCharacterCasing="Upper"
+                            mah:ControlsHelper.FocusBorderBrush="#93a98f"
+                            mah:ControlsHelper.MouseOverBorderBrush="#93a98f"
+                            Command="{Binding SelectAllLiteratureCommand}"
+                            BorderBrush="#93a98f"
+                            Foreground="#337287"
+                            Cursor="Hand"
+                            Margin="0,0,0,20" 
+                            Height="30"
+                            Content="Select all literature"/>
+                    <Button mah:ControlsHelper.ContentCharacterCasing="Upper"
+                            mah:ControlsHelper.FocusBorderBrush="#93a98f"
+                            mah:ControlsHelper.MouseOverBorderBrush="#93a98f"
+                            Command="{Binding SelectAllVideoCommand}"
+                            BorderBrush="#93a98f"
+                            Foreground="#337287"
+                            Cursor="Hand"
+                            Margin="0,0,0,20" 
+                            Height="30"
+                            Content="Select all video"/>
+                    <Button mah:ControlsHelper.ContentCharacterCasing="Upper"
+                            mah:ControlsHelper.FocusBorderBrush="#93a98f"
+                            mah:ControlsHelper.MouseOverBorderBrush="#93a98f"
+                            Command="{Binding SelectAllCompletedCommand}"
+                            BorderBrush="#93a98f"
+                            Foreground="#337287"
+                            Cursor="Hand"    
+                            Margin="0,0,0,20"
+                            Content="Select All Completed"/>
+                    <Button mah:ControlsHelper.ContentCharacterCasing="Upper"
+                            mah:ControlsHelper.FocusBorderBrush="#93a98f"
+                            mah:ControlsHelper.MouseOverBorderBrush="#93a98f"
+                            Command="{Binding SelectAllFailCommand}"
+                            BorderBrush="#93a98f"
+                            Foreground="#337287"
+                            Cursor="Hand"  
+                            Margin="0,0,0,20"
+                            Content="Select All Fail"/>
+                    <Button mah:ControlsHelper.ContentCharacterCasing="Upper"
+                            mah:ControlsHelper.FocusBorderBrush="#93a98f"
+                            mah:ControlsHelper.MouseOverBorderBrush="#93a98f"
+                            Command="{Binding ClearListCommand}"
+                            BorderBrush="#93a98f"
+                            Foreground="Black"
+                            Background="#e18d43"
+                            Cursor="Hand"  
+                            Margin="0,0,0,20" 
+                            Content="Clear"/>
+                </StackPanel>
+                <Button Grid.Row="1" mah:ControlsHelper.ContentCharacterCasing="Upper"
                         mah:ControlsHelper.FocusBorderBrush="#93a98f"
                         mah:ControlsHelper.MouseOverBorderBrush="#93a98f"
+                        Command="{Binding ShowDownloadSettingDialogCommand}"
                         BorderBrush="#93a98f"
-                        Command="{Binding SelectAllArtCommand}"
-                        Foreground="#337287"
-                        Cursor="Hand"
-                        Margin="0,0,0,20" Height="30"
-                        Content="Select all art"/>
-                <Button mah:ControlsHelper.ContentCharacterCasing="Upper"
-                        mah:ControlsHelper.FocusBorderBrush="#93a98f"
-                        mah:ControlsHelper.MouseOverBorderBrush="#93a98f"
-                        Command="{Binding SelectAllLiteratureCommand}"
-                        BorderBrush="#93a98f"
-                        Foreground="#337287"
-                        Cursor="Hand"
-                        Margin="0,0,0,20" 
-                        Height="30"
-                        Content="Select all literature"/>
-                <Button mah:ControlsHelper.ContentCharacterCasing="Upper"
-                        mah:ControlsHelper.FocusBorderBrush="#93a98f"
-                        mah:ControlsHelper.MouseOverBorderBrush="#93a98f"
-                        Command="{Binding SelectAllVideoCommand}"
-                        BorderBrush="#93a98f"
-                        Foreground="#337287"
-                        Cursor="Hand"
-                        Margin="0,0,0,20" 
-                        Height="30"
-                        Content="Select all video"/>
-                <Button mah:ControlsHelper.ContentCharacterCasing="Upper"
-                        mah:ControlsHelper.FocusBorderBrush="#93a98f"
-                        mah:ControlsHelper.MouseOverBorderBrush="#93a98f"
-                        Command="{Binding SelectAllCompletedCommand}"
-                        BorderBrush="#93a98f"
-                        Foreground="#337287"
-                        Cursor="Hand"    
-                        Margin="0,0,0,20"
-                        Content="Select All Completed"/>
-                <Button mah:ControlsHelper.ContentCharacterCasing="Upper"
-                        mah:ControlsHelper.FocusBorderBrush="#93a98f"
-                        mah:ControlsHelper.MouseOverBorderBrush="#93a98f"
-                        Command="{Binding SelectAllFailCommand}"
-                        BorderBrush="#93a98f"
-                        Foreground="#337287"
-                        Cursor="Hand"  
-                        Margin="0,0,0,20"
-                        Content="Select All Fail"/>
-                <Button mah:ControlsHelper.ContentCharacterCasing="Upper"
-                        mah:ControlsHelper.FocusBorderBrush="#93a98f"
-                        mah:ControlsHelper.MouseOverBorderBrush="#93a98f"
-                        Command="{Binding ClearListCommand}"
-                        BorderBrush="#93a98f"
+                        BorderThickness="2"
                         Foreground="Black"
-                        Background="#e18d43"
                         Cursor="Hand"  
-                        Margin="0,0,0,20" 
-                        Content="Clear"/>
-            </StackPanel>
+                        Margin="10,0,0,0" >       
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock  Text="Download mode" 
+                                    Foreground="#337287"
+                                    Margin="0,0,8,0"
+                                    VerticalAlignment="Center" />
+                        <iconPacks:PackIconFontAwesome Kind="SlidersSolid" 
+                                                       Foreground="#337287"  
+                                                       VerticalAlignment="Center"/>     
+                    </StackPanel>
+                </Button>
+            </Grid>
             <mah:Badged Grid.Column="1"
                         BadgePlacementMode="TopLeft" Badge="{Binding DownloadList.Count}"
                         Margin="20,20,20,0" >
@@ -213,25 +235,25 @@
                         <DataGridTemplateColumn Width="50">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate >
-                                    <CheckBox   Cursor="Hand"    
-                                                Name="HeaderCheckBox" 
-                                                IsChecked="{Binding DataContext.IsSelectAll, 
-                                                            RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, 
-                                                                            Mode=FindAncestor}}" 
-                                                HorizontalAlignment="Center"
-                                                Margin="5,0,0,0"
-                                                VerticalAlignment="Center"/>
+                                    <CheckBox Cursor="Hand"    
+                                              Name="HeaderCheckBox" 
+                                              IsChecked="{Binding DataContext.IsSelectAll, 
+                                                          RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, 
+                                                          Mode=FindAncestor}}" 
+                                              HorizontalAlignment="Center"
+                                              Margin="5,0,0,0"
+                                              VerticalAlignment="Center"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <CheckBox   Cursor="Hand"                  
-                                                Margin="5,0,0,0"
-                                                IsChecked="{Binding IsSelected, 
-                                                            Mode=TwoWay, 
-                                                            UpdateSourceTrigger=PropertyChanged}" 
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"/>
+                                    <CheckBox Cursor="Hand"                  
+                                              Margin="5,0,0,0"
+                                              IsChecked="{Binding IsSelected, 
+                                                          Mode=TwoWay, 
+                                                          UpdateSourceTrigger=PropertyChanged}" 
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -260,9 +282,9 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button Cursor="Hand" Foreground="#337287" Margin="5,0,5,0"  
-                                            Command="{  Binding Path=DataContext.RemoveDeviantFromListCommand,       
-                                                        RelativeSource= {RelativeSource FindAncestor,
-                                                        AncestorType={x:Type DataGrid}}}" 
+                                            Command="{Binding Path=DataContext.RemoveDeviantFromListCommand,       
+                                                      RelativeSource= {RelativeSource FindAncestor,
+                                                      AncestorType={x:Type DataGrid}}}" 
                                             CommandParameter="{Binding Path= Deviant.Id}" 
                                             Content="Remove"/>
                                 </DataTemplate>
@@ -291,8 +313,8 @@
                     <TextBlock Text="{Binding DownloadLabel}" 
                                 Margin="0,0,8,0" 
                                 VerticalAlignment="Center"/>
-                <iconPacks:PackIconFontAwesome  Kind="DownloadSolid" 
-                                                VerticalAlignment="Center"/>
+                    <iconPacks:PackIconFontAwesome  Kind="DownloadSolid" 
+                                                    VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
         </Grid>

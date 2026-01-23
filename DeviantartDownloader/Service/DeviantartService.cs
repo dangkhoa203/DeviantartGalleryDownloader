@@ -1,5 +1,6 @@
 ﻿using ControlzEx.Standard;
 using DeviantartDownloader.DTOs;
+using DeviantartDownloader.Exceptions;
 using DeviantartDownloader.Extension;
 using DeviantartDownloader.Models;
 using DeviantartDownloader.Models.Enum;
@@ -100,6 +101,9 @@ namespace DeviantartDownloader.Service {
                     hasMore = result.has_more ?? false;
                     offSet = result.next_offset;
                     contents.AddRange(result.results ?? []);
+                    if(hasMore && RefreshToken!=null) {
+                        await Task.Delay(2000);
+                    }
                 }
 
                 List<GalleryFolder> folders = contents
@@ -148,6 +152,9 @@ namespace DeviantartDownloader.Service {
                     hasMore = result.has_more ?? false;
                     offSet = result.next_offset;
                     contents.AddRange(result.results ?? []);
+                    if(hasMore && RefreshToken != null) {
+                        await Task.Delay(1000);
+                    }
                 }
 
                 List<Deviant> deviants = contents
@@ -216,6 +223,9 @@ namespace DeviantartDownloader.Service {
                         if(content.Deviant.Downloadable) {
                             string request = $"https://www.deviantart.com/api/v1/oauth2/deviation/download/{content.Deviant.Id}?access_token={AccessToken}";
                             using HttpResponseMessage getDownloadresponse = await _httpClient.GetAsync(request, HttpCompletionOption.ResponseContentRead, cts.Token);
+                            if(getDownloadresponse.StatusCode == HttpStatusCode.TooManyRequests) {
+                                throw new RateLimitException();
+                            }
                             var jsonResponse = await getDownloadresponse.Content.ReadAsStringAsync();
                             var downloadContent = JsonSerializer.Deserialize<Response_GetDownloadContent>(jsonResponse);
 
@@ -223,9 +233,11 @@ namespace DeviantartDownloader.Service {
                                 throw new Exception(downloadContent.error_description);
                             }
                             FileType imgType = GetFileType(content.Deviant.Type, downloadContent.filename);
+                            await Task.Delay(1500);
                             using(var file = new FileStream(Path.Combine(destinationPath, content.Deviant.Author.Username, $"[{content.Deviant.PublishDate.Date.ToString("yyyy-MM-dd")}] {GetLegalFileName(content.Deviant.Title)} by {content.Deviant.Author.Username} - {content.Deviant.Url.Substring(content.Deviant.Url.Length - 9)}.{imgType.ToString()}"), FileMode.Create, FileAccess.Write, FileShare.None)) {
                                 await _httpClient.DownloadAsync(downloadContent.src, file, Speed, Progress, cts.Token);
                             }
+                            
                             content.Status = DownloadStatus.Completed;
                             content.Percent = 100;
                         }
@@ -238,7 +250,7 @@ namespace DeviantartDownloader.Service {
                             using(var file = new FileStream(Path.Combine(destinationPath, content.Deviant.Author.Username, $"[{content.Deviant.PublishDate.Date.ToString("yyyy-MM-dd")}] {GetLegalFileName(content.Deviant.Title)} by {content.Deviant.Author.Username} - {content.Deviant.Url.Substring(content.Deviant.Url.Length - 9)}.{imgType.ToString()}"), FileMode.Create, FileAccess.Write, FileShare.None)) {
                                 await _httpClient.DownloadAsync(content.Deviant.Content.Src, file, Speed, Progress, cts.Token);
                             }
-
+                            
                             content.Status = DownloadStatus.Completed;
                             content.Percent = 100;
                         }
@@ -275,9 +287,8 @@ namespace DeviantartDownloader.Service {
 
                             using(var response = await httpClient.SendAsync(request, cts.Token)) {
                                 if(response.StatusCode == HttpStatusCode.Forbidden) {
-                                    content.Status = DownloadStatus.Rate_Limited;
                                     content.DownloadSpeed = "";
-                                    return;
+                                    throw new RateLimitException();
                                 }
                                 progress.Report(0.5f);
 
@@ -302,11 +313,13 @@ namespace DeviantartDownloader.Service {
             }
             catch(TaskCanceledException ex) {
                 if(ex.CancellationToken == cts.Token) {
-                    content.Status = DownloadStatus.Canceled;
+                    content.Status = DownloadStatus.Fail;
                 }
                 else {
                     content.Status = DownloadStatus.Fail;
                 }
+            }catch(RateLimitException ex) {
+                content.Status = DownloadStatus.Rate_Limited;
             }
             catch(Exception ex) {
                 content.Status = DownloadStatus.Fail;

@@ -281,6 +281,7 @@ namespace DeviantartDownloader.ViewModels {
                     return;
                 }
                 if(SelectedUsername != SearchUserName) {
+                    IsComboBoxEnabled = false;
                     LoadingSearchFolder = true;
                     SearchFolderLabel = "Cancel";
                     var folders = await _deviantartService.GetFolders(SearchUserName, cts,_dialogCoordinator,this);
@@ -300,7 +301,7 @@ namespace DeviantartDownloader.ViewModels {
                         IsComboBoxEnabled = true;
                     }
                     SearchFolderLabel = "Search";
-
+                    IsComboBoxEnabled = true;
                     LoadingSearchFolder = false;
                 }
             }
@@ -311,10 +312,12 @@ namespace DeviantartDownloader.ViewModels {
                 cts = new CancellationTokenSource();
                 IsComboBoxEnabled = false;
                 LoadingSearchFolder = false;
+                IsComboBoxEnabled = true;
             }
         }
         private async Task GetDeviants() {
             if(!LoadingSearchDeviant) {
+                IsComboBoxEnabled = false;
                 LoadingSearchDeviant = true;
                 SearchDeviantLabel = "Cancel";
                 var deviants = await _deviantartService.GetDeviants(SearchUserName, SelectedFolder?.Id ?? "", cts,_dialogCoordinator,this);
@@ -330,12 +333,14 @@ namespace DeviantartDownloader.ViewModels {
                 }
                 SearchDeviantLabel = "Add to list";
                 LoadingSearchDeviant = false;
+                IsComboBoxEnabled = true;
             }
             else {
                 SearchDeviantLabel = "Add to list";
                 cts.Cancel();
                 cts = new CancellationTokenSource();
                 LoadingSearchDeviant = false;
+                IsComboBoxEnabled = true;
             }
         }
 
