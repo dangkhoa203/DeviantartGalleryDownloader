@@ -233,10 +233,11 @@ namespace DeviantartDownloader.Service {
                                 throw new Exception(downloadContent.error_description);
                             }
                             FileType imgType = GetFileType(content.Deviant.Type, downloadContent.filename);
+                            await Task.Delay(1500);
                             using(var file = new FileStream(Path.Combine(destinationPath, content.Deviant.Author.Username, $"[{content.Deviant.PublishDate.Date.ToString("yyyy-MM-dd")}] {GetLegalFileName(content.Deviant.Title)} by {content.Deviant.Author.Username} - {content.Deviant.Url.Substring(content.Deviant.Url.Length - 9)}.{imgType.ToString()}"), FileMode.Create, FileAccess.Write, FileShare.None)) {
                                 await _httpClient.DownloadAsync(downloadContent.src, file, Speed, Progress, cts.Token);
                             }
-                            await Task.Delay(2000);
+                            
                             content.Status = DownloadStatus.Completed;
                             content.Percent = 100;
                         }
