@@ -126,8 +126,8 @@ namespace DeviantartDownloader.ViewModels {
             _deviantSearchWaitTime = appSetting.UserKeySearchDeviantWaitTime.ToString();
             _deviantDownloadWaitTime = appSetting.UserKeyDownloadDeviantWaitTime.ToString();
             _folderSearchWaitTime=appSetting.UserKeySearchFolderWaitTime.ToString();
-            _downloadDescription=appSetting.DownloadArtDescription;
-            _descriptionOnly = appSetting.DownloadArtDescriptionOnly;
+            _downloadDescription=appSetting.DownloadDescription;
+            _descriptionOnly = appSetting.DownloadDescriptionOnly;
             _useCustomStyle=appSetting.UseCustomStyle;
             _customStyle=appSetting.CustomStyle;
             SaveCommand = new RelayCommand(async o => {
@@ -147,7 +147,7 @@ namespace DeviantartDownloader.ViewModels {
                 var Result = await _dialogCoordinator.ShowMessageAsync(this, "INFORMATION", "Setting wait time for each request when using user key.\n*Note: search request will be send multiple time based on gallery size");
             }, o => true);
             DescriptionInfoCommand = new RelayCommand(async o => {
-                var Result = await _dialogCoordinator.ShowMessageAsync(this, "INFORMATION", "Saving image description as a HTML file.");
+                var Result = await _dialogCoordinator.ShowMessageAsync(this, "INFORMATION", "Saving description as a HTML file.");
             }, o => true);
         }
     }
