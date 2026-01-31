@@ -315,6 +315,7 @@ namespace DeviantartDownloader.ViewModels {
                 AppSetting.UserKeySearchFolderWaitTime = int.Parse(viewModel.FolderSearchWaitTime);
                 AppSetting.DownloadDescription = viewModel.DownloadDescription;
                 AppSetting.DownloadDescriptionOnly = viewModel.DescriptionOnly;
+                AppSetting.IgnoreEmptyDescription = viewModel.IgnoreEmptyDescription;
                 AppSetting.CustomStyle = viewModel.CustomStyle;
                 AppSetting.UseCustomStyle= viewModel.UseCustomStyle;
             }

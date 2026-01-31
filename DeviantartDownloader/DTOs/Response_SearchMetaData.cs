@@ -7,5 +7,11 @@ namespace DeviantartDownloader.DTOs {
         public ICollection<Content_MetaDataAPI> metadata {
             get; set;
         }
+        public string? error {
+            set; get;
+        }
+        public string? error_description {
+            get; set;
+        }
     }
 }

@@ -194,22 +194,25 @@
                     </StackPanel>
                     <Grid Grid.Row="1"
                           Margin="20,0,20,0"
-                          ColumnDefinitions="200,*">
+                          >
                         <StackPanel Grid.Column="0" 
                                     Orientation="Horizontal">
                             <CheckBox IsChecked="{Binding DownloadDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                       Content="Download description" 
                                       FlowDirection="LeftToRight"
                                       Margin="5,0,0,0" />
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" 
-                                    Orientation="Horizontal">
                             <CheckBox IsChecked="{Binding DescriptionOnly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+          IsEnabled="{Binding DownloadDescription}"
+          Content="Only download description"
+          FlowDirection="LeftToRight"
+          Margin="25,0,0,0" />
+                            <CheckBox IsChecked="{Binding IgnoreEmptyDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                       IsEnabled="{Binding DownloadDescription}"
-                                      Content="Only download description"
+                                      Content="Ignore empty description"
                                       FlowDirection="LeftToRight"
-                                      Margin="5,0,0,0" />
+                                      Margin="25,0,0,0" />
                         </StackPanel>
+                        
                     </Grid>
                 </Grid>
                 <Grid Grid.Row="4"

@@ -330,6 +330,9 @@ namespace DeviantartDownloader.Service {
         }
         public async Task GetDescriptions(List<DownloadableDeviant> deviants,CancellationTokenSource cts,string destinationPath, AppSetting appSetting,ProgressDialogController progressDialogController=null) {
             try {
+                if(!await GetAccessToken())
+                    throw new Exception("Fail authenticate");
+
                 progressDialogController.Canceled += (sender, e) => {
                     cts.Cancel();
                 };
@@ -351,15 +354,24 @@ namespace DeviantartDownloader.Service {
                     if(getMetaDataresponse.StatusCode == HttpStatusCode.TooManyRequests) {
                         throw new RateLimitException();
                     }
-                    if(getMetaDataresponse.StatusCode == HttpStatusCode.OK) {
+                    else {
                         var metaDataJSONResponse = await getMetaDataresponse.Content.ReadAsStringAsync();
                         var metadata = JsonSerializer.Deserialize<Response_SearchMetaData>(metaDataJSONResponse);
-                        metaDatas.AddRange(metadata.metadata);
+                        if(metadata.error != null) {
+                            throw new Exception(metadata.error_description);
+                        }
+                        metaDatas.AddRange(metadata.metadata.ToList());
                     }
                 }
+                if(appSetting.IgnoreEmptyDescription) {
+                    metaDatas = metaDatas.Where(d => d.description.Length > 7).ToList();
+                }
+                progressDialogController.SetMessage("Saving deviation description...");
                 foreach(var data in metaDatas) {
                     var deviant = deviants.FirstOrDefault(d => d.Deviant.Id == data.deviationid);
-                    progressDialogController.SetMessage("Saving deviation description...");
+                    if(!Directory.Exists(Path.Combine(destinationPath, deviant.Deviant.Author.Username))) {
+                        Directory.CreateDirectory(Path.Combine(destinationPath, deviant.Deviant.Author.Username));
+                    }
                     if(deviant != null) {
                         string filePath = Path.Combine(destinationPath, deviant.Deviant.Author.Username, $"[{deviant.Deviant.PublishDate.Date.ToString("yyyy-MM-dd")}] {GetLegalFileName(deviant.Deviant.Title)} by {deviant.Deviant.Author.Username} - {deviant.Deviant.Url.Substring(deviant.Deviant.Url.Length - 9)} (description).html");
                         await File.WriteAllTextAsync(filePath, CreateDescriptionHTMLFile(deviant.Deviant.Title, data.description, deviant.Deviant.Url, appSetting, deviant.Deviant.Content?.Src, deviant.Deviant.Type), cts.Token);
@@ -395,58 +407,56 @@ namespace DeviantartDownloader.Service {
         private FileType GetFileType(DeviantType type,string url) {
             switch(type) {
                 case DeviantType.Art:
-                    return ReturnImageFileType(url);
+                    return ReturnArtFileType(url);
                 case DeviantType.Video:
                     return ReturnVideoFileType(url);
                 default:
                     return FileType.unknown;
             }
         }
-        private FileType ReturnImageFileType(string url) {
-            if(url.Contains(".jpg")) {
-                return FileType.jpg;
+        private FileType ReturnArtFileType(string url) {
+            List<FileType> validFileType = [
+                FileType.jpg,
+                FileType.png,
+                FileType.gif,
+                FileType.swf,
+                FileType.fla,
+                FileType.pdf,
+                FileType.psd,
+                FileType.ico,
+                FileType.rar,
+                FileType.zip,
+                FileType.sevenzip,
+                ];
+
+            foreach(FileType item in validFileType) {
+                if(url.Contains($".{item.ToString()}")) {
+                    return item;
+                }
+                if(item == FileType.sevenzip) {
+                    if(url.Contains($".7z")) {
+                        return item;
+                    }
+                }
             }
-            else if(url.Contains(".png")) {
-                return FileType.png;
-            }
-            else if(url.Contains(".gif")) {
-                return FileType.gif;
-            }
-            else if(url.Contains(".swf")) {
-                return FileType.swf;
-            }
-            else if(url.Contains(".fla")) {
-                return FileType.fla;
-            }
-            else if(url.Contains(".pdf")) {
-                return FileType.pdf;
-            }
-            else if(url.Contains(".psd")) {
-                return FileType.psd;
-            }
+          
             return FileType.jpg;
         }
         private FileType ReturnVideoFileType(string url) {
-            if(url.Contains(".mp4")) {
-                return FileType.mp4;
-            }
-            else if(url.Contains(".mp3")) {
-                return FileType.mp3;
-            }
-            else if(url.Contains(".mov")) {
-                return FileType.mov;
-            }
-            else if(url.Contains(".webm")) {
-                return FileType.webm;
-            }
-            else if(url.Contains(".wmv")) {
-                return FileType.wmv;
-            }
-            else if(url.Contains(".avi")) {
-                return FileType.avi;
-            }
-            else if(url.Contains(".flv")) {
-                return FileType.flv;
+            List<FileType> validFileType = [
+                FileType.mp3,
+                FileType.mp4,
+                FileType.mov,
+                FileType.webm,
+                FileType.wmv,
+                FileType.avi,
+                FileType.flv,
+                ];
+
+            foreach(FileType item in validFileType) {
+                if(url.Contains($".{item.ToString()}")) {
+                    return item;
+                }
             }
             return FileType.mp4;
         }

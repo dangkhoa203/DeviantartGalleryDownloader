@@ -21,10 +21,13 @@ namespace DeviantartDownloader.Models {
         } = 2;
         public bool DownloadDescription {
             get; set;
-        }=false;
+        } = false;
         public bool DownloadDescriptionOnly {
             get; set;
         } = false;
+        public bool IgnoreEmptyDescription {
+            get; set;
+        } = true;
         public bool UseCustomStyle {
             get; set;
         } = false;

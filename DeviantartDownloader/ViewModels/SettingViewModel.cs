@@ -84,6 +84,16 @@ namespace DeviantartDownloader.ViewModels {
             }
         }
 
+        private bool _ignoreEmptyDescription;
+        public bool IgnoreEmptyDescription {
+            get {
+                return _ignoreEmptyDescription;
+            }
+            set {
+                _ignoreEmptyDescription = value;
+            }
+        }
+
         private bool _useCustomStyle;
         public bool UseCustomStyle {
             get {
@@ -128,6 +138,7 @@ namespace DeviantartDownloader.ViewModels {
             _folderSearchWaitTime=appSetting.UserKeySearchFolderWaitTime.ToString();
             _downloadDescription=appSetting.DownloadDescription;
             _descriptionOnly = appSetting.DownloadDescriptionOnly;
+            _ignoreEmptyDescription=appSetting.IgnoreEmptyDescription;
             _useCustomStyle=appSetting.UseCustomStyle;
             _customStyle=appSetting.CustomStyle;
             SaveCommand = new RelayCommand(async o => {
