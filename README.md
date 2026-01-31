@@ -6,7 +6,7 @@ You can download the latest version at [here](https://github.com/dangkhoa203/Dev
 * **⚡ Asynchronous Performance:** Built with async for multi-threaded, lightning-fast downloads.
 * **📝 Literature Downloading:** Save literature into a html file.
 # Usage Question
- Q. What a header string and where to get it.
+ Q. What a header string and where to get it.\
  A. The header string is your logged-in cookie, you can use it to download restricted literature without getting "the content unavailable" text.
 To get the header string, you can use tools like [cookie extractor](https://chromewebstore.google.com/detail/cookies-extractor/gdbmkehljhmfcjgbjcfaklnabeccddna) or look up the cookie in the network tab in the DevTools console.
 
@@ -41,7 +41,7 @@ After you get your header string, you can input it here:
   <img width="1440" height="934" alt="image" src="https://github.com/user-attachments/assets/e8f83383-0912-4dc9-b98c-3153bed25473" />
 
 
-Q. How can download orginal size image.
+Q. How can download orginal size image.\
 A. Some images will be marked with downloadable, which means you can download the original file, but you must use your user key to be able to download it.
   To get your user key
     1. Press the key icon
@@ -57,8 +57,11 @@ A. Some images will be marked with downloadable, which means you can download th
     7. Result
       <img width="1440" height="938" alt="image" src="https://github.com/user-attachments/assets/74555d12-02ff-43a6-8f18-798dacb4d987" />
 
-Q. Why am i getting Rate_Limit status.
+Q. Why am i getting Rate_Limit status.\
 A. If you send too many request in short amount of time, Deviantart will block you from making request for certain amount of time. If your literature is getting Rate_Limit status then you must wait around 5 to 10 minute before you can download it again, images will last much longer from 30 minute to 1 hour minimum, videos download can't get Rate_Limit status. 
+
+Q. Why am i getting Tier_Locked status.\
+A. Some deviation will be locked and the only way to download it is using user key on account that can access to the deviation.
 
 # Usage Example
 1. Home menu
