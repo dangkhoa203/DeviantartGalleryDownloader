@@ -75,6 +75,23 @@
                     </DataTemplate>
                 </Button.ContentTemplate>
             </Button>
+            <Button Command="{Binding ToProjectPageCommand}"
+                    Cursor="Hand"
+                    ToolTip="Project Page"
+                    Content="">
+                <Button.ContentTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconFontAwesome  Kind="GithubBrands"
+                                    Width="22" Height="22"
+                                    VerticalAlignment="Center"/>
+                            <TextBlock  Margin="4 0 0 0"
+                                        VerticalAlignment="Center"
+                                        Text="" />
+                        </StackPanel>
+                    </DataTemplate>
+                </Button.ContentTemplate>
+            </Button>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
     <Grid RowDefinitions="100,50,*,50,50">
@@ -189,6 +206,15 @@
                     <Button mah:ControlsHelper.ContentCharacterCasing="Upper"
                             mah:ControlsHelper.FocusBorderBrush="#93a98f"
                             mah:ControlsHelper.MouseOverBorderBrush="#93a98f"
+                            Command="{Binding SelectAllTierLockedCommand}"
+                            BorderBrush="#93a98f"
+                            Foreground="#337287"
+                            Cursor="Hand"  
+                            Margin="0,0,0,20"
+                            Content="Select All TIer Locked"/>
+                    <Button mah:ControlsHelper.ContentCharacterCasing="Upper"
+                            mah:ControlsHelper.FocusBorderBrush="#93a98f"
+                            mah:ControlsHelper.MouseOverBorderBrush="#93a98f"
                             Command="{Binding ClearListCommand}"
                             BorderBrush="#93a98f"
                             Foreground="Black"
@@ -217,82 +243,99 @@
                     </StackPanel>
                 </Button>
             </Grid>
-            <mah:Badged Grid.Column="1"
-                        BadgePlacementMode="TopLeft" Badge="{Binding DownloadList.Count}"
-                        Margin="20,20,20,0" >
-                <DataGrid ItemsSource="{Binding DownloadList,  UpdateSourceTrigger=PropertyChanged}"
-                          Background="#e9f0e6" BorderBrush="#93a98f" BorderThickness="1"
-                          RowBackground="#e9f0e6" CanUserAddRows="False" ColumnHeaderHeight="40" RowHeight="40"
-                          AutoGenerateColumns="False" SelectionMode="Single" 
-                          SelectionUnit="Cell" CanUserResizeRows="False">
-                    <DataGrid.ColumnHeaderStyle>
-                        <Style BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}" 
-                               TargetType="{x:Type DataGridColumnHeader}">
-                            <Setter Property="mah:ControlsHelper.ContentCharacterCasing" Value="Normal" />
-                        </Style>
-                    </DataGrid.ColumnHeaderStyle>
-                    <DataGrid.Columns>
-                        <DataGridTemplateColumn Width="50">
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate >
-                                    <CheckBox Cursor="Hand"    
-                                              Name="HeaderCheckBox" 
-                                              IsChecked="{Binding DataContext.IsSelectAll, 
-                                                          RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, 
-                                                          Mode=FindAncestor}}" 
-                                              HorizontalAlignment="Center"
-                                              Margin="5,0,0,0"
-                                              VerticalAlignment="Center"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <CheckBox Cursor="Hand"                  
-                                              Margin="5,0,0,0"
-                                              IsChecked="{Binding IsSelected, 
-                                                          Mode=TwoWay, 
-                                                          UpdateSourceTrigger=PropertyChanged}" 
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Author" 
-                                            Binding="{Binding Deviant.Author.Username}" 
-                                            IsReadOnly="True"  Width="120" />
-                        <DataGridTextColumn Header="Deviation Name" 
-                                            Binding="{Binding Deviant.Title}"  
-                                            Width="*" IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Type" 
-                                            Binding="{Binding Deviant.Type}"  
-                                            IsReadOnly="True" Width="60" />
-                        <DataGridTextColumn Header="Date" 
-                                            Binding="{Binding Deviant.PublishDate,StringFormat='dd/MM/yyyy'}"  
-                                            IsReadOnly="True" Width="80" />
-                        <DataGridTextColumn Header="Percent" 
-                                            Binding="{Binding DisplayPercent}"  
-                                            IsReadOnly="True" Width="70" />
-                        <DataGridTextColumn Header="Status" 
-                                            Binding="{Binding Status}" 
-                                            IsReadOnly="True" Width="100" />
-                        <DataGridTextColumn Header="Speed" 
-                                            Binding="{Binding DownloadSpeed}" 
-                                            IsReadOnly="True" Width="80"  />
-                        <DataGridTemplateColumn Header="" Width="80">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button Cursor="Hand" Foreground="#337287" Margin="5,0,5,0"  
-                                            Command="{Binding Path=DataContext.RemoveDeviantFromListCommand,       
-                                                      RelativeSource= {RelativeSource FindAncestor,
-                                                      AncestorType={x:Type DataGrid}}}" 
-                                            CommandParameter="{Binding Path= Deviant.Id}" 
-                                            Content="Remove"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </mah:Badged>
+            <Grid Grid.Column="1"
+                  RowDefinitions="30,*"
+                  Margin="20,0,20,0">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Command="{Binding ExportListCommand}" ToolTip="Export list to JSON file" BorderBrush="#2b3635" Cursor="Hand" Width="30" Style="{DynamicResource MahApps.Styles.Button.Circle}">
+                        <iconPacks:PackIconFontAwesome Kind="FileExportSolid" 
+                               Foreground="#2b3635"  
+                               VerticalAlignment="Center"/>
+                    </Button>
+                    <Button Command="{Binding ImportListCommand}" ToolTip="Import JSON file to list" BorderBrush="#2b3635" Cursor="Hand" Width="30" Margin="10,0,0,0" Style="{DynamicResource MahApps.Styles.Button.Circle}">
+                        <iconPacks:PackIconFontAwesome Kind="FileImportSolid" 
+                                                       Foreground="#2b3635"  
+                                                       VerticalAlignment="Center"/> 
+                    </Button>
+                </StackPanel>
+                <mah:Badged Grid.Row="1"
+            BadgePlacementMode="TopLeft" Badge="{Binding DownloadList.Count}"
+            Margin="0,5,0,0" >
+                    <DataGrid ItemsSource="{Binding DownloadList,  UpdateSourceTrigger=PropertyChanged}"
+              Background="#e9f0e6" BorderBrush="#93a98f" BorderThickness="1"
+              RowBackground="#e9f0e6" CanUserAddRows="False" ColumnHeaderHeight="40" RowHeight="40"
+              AutoGenerateColumns="False" SelectionMode="Single" 
+              SelectionUnit="Cell" CanUserResizeRows="False">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}" 
+                   TargetType="{x:Type DataGridColumnHeader}">
+                                <Setter Property="mah:ControlsHelper.ContentCharacterCasing" Value="Normal" />
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Width="50">
+                                <DataGridTemplateColumn.HeaderTemplate>
+                                    <DataTemplate >
+                                        <CheckBox Cursor="Hand"    
+                                  Name="HeaderCheckBox" 
+                                  IsChecked="{Binding DataContext.IsSelectAll, 
+                                              RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, 
+                                              Mode=FindAncestor}}" 
+                                  HorizontalAlignment="Center"
+                                  Margin="5,0,0,0"
+                                  VerticalAlignment="Center"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.HeaderTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox Cursor="Hand"                  
+                                  Margin="5,0,0,0"
+                                  IsChecked="{Binding IsSelected, 
+                                              Mode=TwoWay, 
+                                              UpdateSourceTrigger=PropertyChanged}" 
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Author" 
+                                Binding="{Binding Deviant.Author.Username}" 
+                                IsReadOnly="True"  Width="120" />
+                            <DataGridTextColumn Header="Deviation Name" 
+                                Binding="{Binding Deviant.Title}"  
+                                Width="*" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Type" 
+                                Binding="{Binding Deviant.Type}"  
+                                IsReadOnly="True" Width="60" />
+                            <DataGridTextColumn Header="Date" 
+                                Binding="{Binding Deviant.PublishDate,StringFormat='dd/MM/yyyy'}"  
+                                IsReadOnly="True" Width="80" />
+                            <DataGridTextColumn Header="Percent" 
+                                Binding="{Binding DisplayPercent}"  
+                                IsReadOnly="True" Width="70" />
+                            <DataGridTextColumn Header="Status" 
+                                Binding="{Binding Status}" 
+                                IsReadOnly="True" Width="100" />
+                            <DataGridTextColumn Header="Speed" 
+                                Binding="{Binding DownloadSpeed}" 
+                                IsReadOnly="True" Width="80"  />
+                            <DataGridTemplateColumn Header="" Width="80">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Cursor="Hand" Foreground="#337287" Margin="5,0,5,0"  
+                                Command="{Binding Path=DataContext.RemoveDeviantFromListCommand,       
+                                          RelativeSource= {RelativeSource FindAncestor,
+                                          AncestorType={x:Type DataGrid}}}" 
+                                CommandParameter="{Binding Path= Deviant.Id}" 
+                                Content="Remove"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </mah:Badged>
+            </Grid>
+            
         </Grid>
         <Grid Grid.Row="3" Margin="0,0,0,0">
             <mah:MetroProgressBar Background="#d4dfd0" IsIndeterminate="{Binding IsDownloading}"/>
@@ -305,7 +348,7 @@
                     Command="{Binding DownloadDeviantCommand}"
                     Background="#00c787"
                     Cursor="Hand"
-                    BorderBrush="#93a98f" 
+                    BorderBrush="#2b3635" 
                     BorderThickness="2"
                     Margin="20,0,20,10"
                     FontSize="18">

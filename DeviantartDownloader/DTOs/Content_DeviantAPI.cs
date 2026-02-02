@@ -16,5 +16,6 @@ namespace DeviantartDownloader.DTOs
         public string? excerpt { get; set; }
         public bool? is_downloadable { get; set; }
         public string? published_time   { get; set; }
+        public string? tier_access {get; set; }
     }
 }

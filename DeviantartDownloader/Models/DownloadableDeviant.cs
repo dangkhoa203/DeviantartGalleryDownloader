@@ -44,7 +44,7 @@ namespace DeviantartDownloader.Models
         public DownloadableDeviant(Deviant deviant) {
             Deviant = deviant;
             _percent = 0;
-            _status = DownloadStatus.Waiting;
+            _status = deviant.ContentLocked ? DownloadStatus.Tier_Locked: DownloadStatus.Waiting;
             _downloadSpeed = "";
         }
         private bool _isSeleted = false;

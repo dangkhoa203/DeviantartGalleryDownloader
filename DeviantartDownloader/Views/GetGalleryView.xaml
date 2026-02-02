@@ -1,17 +1,17 @@
-﻿<mah:MetroWindow    x:Class="DeviantartDownloader.Views.GetGalleryView"
-                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                    xmlns:local="clr-namespace:DeviantartDownloader.Views" xmlns:viewmodels="clr-namespace:DeviantartDownloader.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:GetGalleryViewModel}"
-                    xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                    xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
-                    mc:Ignorable="d"
-                    Background="#d4dfd0" WindowStartupLocation="CenterScreen" WindowTitleBrush="#06070d"
-                    BorderBrush="Black" ShowIconOnTitleBar="False"
-                    Title="Search Gallery" MinHeight="800" MinWidth="1000"
-                    Dialog:DialogParticipation.Register="{Binding}">
+﻿<mah:MetroWindow x:Class="DeviantartDownloader.Views.GetGalleryView"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:local="clr-namespace:DeviantartDownloader.Views" xmlns:viewmodels="clr-namespace:DeviantartDownloader.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:GetGalleryViewModel}"
+                 xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                 xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+                 mc:Ignorable="d"
+                 Background="#d4dfd0" WindowStartupLocation="CenterScreen" WindowTitleBrush="#06070d"
+                 BorderBrush="Black" ShowIconOnTitleBar="False"
+                 Title="Search Gallery" MinHeight="800" MinWidth="1000"
+                 Dialog:DialogParticipation.Register="{Binding}" Loaded="MetroWindow_Loaded">
     <mah:MetroWindow.Resources>
         <CollectionViewSource x:Key="deviantViewItems" Source="{Binding Deviants}"/>
     </mah:MetroWindow.Resources>
@@ -205,7 +205,7 @@
                             <DataGridTextColumn Header="Author"
                                                 Binding="{Binding Author.Username}"
                                                 IsReadOnly="True"
-                                                Foreground="Black" Width="120" />
+                                                Foreground="Black" Width="150" />
                             <DataGridTextColumn Binding="{Binding Title}" 
                                                 Header="Deviation Name" 
                                                 IsReadOnly="True"  
@@ -215,7 +215,7 @@
                                                 IsReadOnly="True" 
                                                 Foreground="Black"  Width="60" />
                             <DataGridTextColumn Header="Date" 
-                                                Binding="{Binding PublishDate,StringFormat='dd/MM/yyyy'}"  
+                                                Binding="{Binding PublishDate,StringFormat='d'}"  
                                                 IsReadOnly="True"
                                                 Foreground="Black" Width="80" />
                             <DataGridTemplateColumn Header="" 
@@ -243,7 +243,7 @@
                 mah:ControlsHelper.MouseOverBorderBrush="#93a98f"
                 Command="{Binding SubmitToDownloadListCommand}"
                 Background="#00c787" Cursor="Hand"
-                BorderBrush="#93a98f" Name="Btn_Submit" Margin="10,0,10,10"
+                BorderBrush="#2b3635" Name="Btn_Submit" Margin="10,0,10,10"
                 BorderThickness="2" FontSize="18">
             <StackPanel Orientation="Horizontal">
                 <TextBlock  Text="Add to download list" 

@@ -22,6 +22,7 @@ namespace DeviantartDownloader.ViewModels {
         }
 
         private IDialogCoordinator _dialogCoordinator;
+        private AppSetting _appSetting;
 
         private bool _loadingSearchFolder = false;
         public bool LoadingSearchFolder {
@@ -199,7 +200,8 @@ namespace DeviantartDownloader.ViewModels {
             get; set;
         }
 
-        public GetGalleryViewModel(DeviantartService service, IDialogCoordinator dialogCoordinator) {
+        public GetGalleryViewModel(DeviantartService service, IDialogCoordinator dialogCoordinator,AppSetting appSetting) {
+            _appSetting= appSetting;
             _deviantartService = service;
             _dialogCoordinator= dialogCoordinator;
             deviantViewItems = CollectionViewSource.GetDefaultView(_deviants);
@@ -284,7 +286,7 @@ namespace DeviantartDownloader.ViewModels {
                     IsComboBoxEnabled = false;
                     LoadingSearchFolder = true;
                     SearchFolderLabel = "Cancel";
-                    var folders = await _deviantartService.GetFolders(SearchUserName, cts,_dialogCoordinator,this);
+                    var folders = await _deviantartService.GetFolders(SearchUserName, cts,_dialogCoordinator,this,_appSetting);
                     if(folders.Count > 0) {
                         ResetSearch();
                         GalleryFolder allFolder = new("", "All", 0);
@@ -320,7 +322,7 @@ namespace DeviantartDownloader.ViewModels {
                 IsComboBoxEnabled = false;
                 LoadingSearchDeviant = true;
                 SearchDeviantLabel = "Cancel";
-                var deviants = await _deviantartService.GetDeviants(SearchUserName, SelectedFolder?.Id ?? "", cts,_dialogCoordinator,this);
+                var deviants = await _deviantartService.GetDeviants(SearchUserName, SelectedFolder?.Id ?? "", cts,_dialogCoordinator,this,_appSetting);
                 deviants = deviants.ToList();
                 if(deviants.Count > 0) {
                     IsSearchable = false;

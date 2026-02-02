@@ -30,7 +30,11 @@ namespace DeviantartDownloader.Views {
             Regex regex = new Regex("[^1-5]+");
             e.Handled = regex.IsMatch(e.Text);
         }
+        private void TextBox_PreviewTextInput1(object sender, TextCompositionEventArgs e) {
 
+            Regex regex = new Regex("[^0-5]+");
+            e.Handled = regex.IsMatch(e.Text);
+        }
         private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e) {
             if(e.Key == Key.Space) {
                 e.Handled = true;

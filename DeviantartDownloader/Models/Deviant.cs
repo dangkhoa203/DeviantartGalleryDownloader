@@ -21,6 +21,7 @@ namespace DeviantartDownloader.Models {
         public DeviantType Type { get; set; }
         public bool Downloadable { get; set; }
         public DateTime PublishDate { get; set; }
+        public bool ContentLocked { get; set; }
         
     }
 }

@@ -10,7 +10,7 @@
     <ApplicationIcon>Icon\Icon.ico</ApplicationIcon>
     <Authors>DK203</Authors>
     <RepositoryUrl>https://github.com/dangkhoa203/Deviantart-Gallery-Downloader</RepositoryUrl>
-    <FileVersion>1.2</FileVersion>
+    <FileVersion>1.3</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

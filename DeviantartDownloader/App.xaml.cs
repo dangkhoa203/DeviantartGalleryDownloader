@@ -6,7 +6,9 @@ using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Extensions.DependencyInjection;
 using System.Configuration;
 using System.Data;
+using System.Globalization;
 using System.Windows;
+using System.Windows.Markup;
 using System.Windows.Navigation;
 
 namespace DeviantartDownloader
@@ -39,6 +41,11 @@ namespace DeviantartDownloader
             if (_serviceProvider is IDisposable disposable) {
                 disposable.Dispose();
             }
+        }
+        private void ApplicationStartup(object sender, StartupEventArgs e) {
+            FrameworkElement.LanguageProperty.OverrideMetadata(
+                typeof(FrameworkElement),
+                new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
         }
     }
 

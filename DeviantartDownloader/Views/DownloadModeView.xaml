@@ -15,7 +15,8 @@
                  Background="#d4dfd0" BorderBrush="Black"
                  Dialog:DialogParticipation.Register="{Binding}">    
     <Grid RowDefinitions="70,30,70,*">
-        <StackPanel Grid.Row="0" Margin="20,0,20,0">
+        <StackPanel Grid.Row="0" 
+                    Margin="20,0,20,0">
             <Label Content="Deviantion Type:"/>
             <ComboBox mah:TextBoxHelper.Watermark="Empty"
                       mah:ControlsHelper.CornerRadius="4"
@@ -33,7 +34,8 @@
         <Label Grid.Row="1"  
                HorizontalAlignment="Center" Margin="20,0,20,0" 
                Content="AND"/>
-        <StackPanel Grid.Row="2" Margin="20,0,20,0">
+        <StackPanel Grid.Row="2" 
+                    Margin="20,0,20,0">
             <Label Content="Status:"/>
             <ComboBox mah:TextBoxHelper.Watermark="Empty"
                       mah:ControlsHelper.CornerRadius="4"
