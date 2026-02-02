@@ -11,7 +11,7 @@
                  Background="#d4dfd0" WindowStartupLocation="CenterScreen" WindowTitleBrush="#06070d"
                  BorderBrush="Black" ShowIconOnTitleBar="False"
                  Title="Search Gallery" MinHeight="800" MinWidth="1000"
-                 Dialog:DialogParticipation.Register="{Binding}">
+                 Dialog:DialogParticipation.Register="{Binding}" Loaded="MetroWindow_Loaded">
     <mah:MetroWindow.Resources>
         <CollectionViewSource x:Key="deviantViewItems" Source="{Binding Deviants}"/>
     </mah:MetroWindow.Resources>

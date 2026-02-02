@@ -527,6 +527,8 @@ namespace DeviantartDownloader.Service {
                     </html>";
         }
         private string CreateDescriptionHTMLFile(string title, string description,string url,AppSetting appSetting, string src="", DeviantType type=DeviantType.Literature) {
+            string value = description.Replace("https://www.deviantart.com/users/outgoing?", "");
+            value = value.Replace("<a ", "<a target='_blank '");
             return $@"
                     <html>
                     <head>
@@ -580,7 +582,7 @@ namespace DeviantartDownloader.Service {
                             :
                             "")}
                             <div class='description-text'> 
-                                {description}
+                                {value}
                             </div>
                        </div> 
                     </body>
